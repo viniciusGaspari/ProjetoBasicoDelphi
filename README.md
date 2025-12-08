@@ -13,7 +13,6 @@ Ele permite cadastrar, editar, excluir e visualizar produtos em uma tabela exibi
 - **Filtro por coluna**: é possível clicar no cabeçalho da coluna e aplicar filtros dinâmicos.
 
 ---
-
 ## ⚙️ Configuração da Conexão com o Banco de Dados (ADOConnection)
 
 O projeto utiliza um **ADOConnection** localizado no `uDataModule.pas` para gerenciar a conexão com o banco de dados.  
@@ -28,19 +27,20 @@ Você pode customizar a conexão diretamente pelo Object Inspector ou via códig
    - Informe o servidor, banco de dados, usuário e senha.
    - Teste a conexão antes de salvar.
 
-### 🔧 Configuração via código
-Você também pode definir a conexão programaticamente no evento `OnCreate` do DataModule:
+Exemplo de ConnectionString:
 
-```delphi
-procedure TDataModule1.DataModuleCreate(Sender: TObject);
-begin
-  ADOConnection1.ConnectionString :=
-    'Provider=SQLOLEDB.1;' +
-    'Persist Security Info=False;' +
-    'User ID=seu_usuario;' +
-    'Password=sua_senha;' +
-    'Initial Catalog=nome_do_banco;' +
-    'Data Source=SEU_SERVIDOR;';
-  ADOConnection1.LoginPrompt := False;
-  ADOConnection1.Connected := True;
-end;
+## 🗄️ Estrutura da Tabela `produto`
+
+Para que o projeto funcione corretamente, crie a tabela `produto` no banco de dados com a seguinte definição:
+
+```sql
+CREATE TABLE produto (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    nome_produto VARCHAR(50) NOT NULL,
+    preco DECIMAL(10,2) NOT NULL,
+    quantidade INT NOT NULL,
+    foto_produto VARBINARY(MAX),
+    id_categoria INT,
+    CONSTRAINT FK_produto_categoria
+        FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
+);
