@@ -14,10 +14,6 @@ Ele permite cadastrar, editar, excluir e visualizar produtos em uma tabela exibi
 
 ---
 
-## 🗄️ Estrutura da Tabela `produto`
-
-Para que o projeto funcione corretamente, crie a tabela `produto` no banco de dados com a seguinte definição:
-
 ## ⚙️ Configuração da Conexão com o Banco de Dados (ADOConnection)
 
 O projeto utiliza um **ADOConnection** localizado no `uDataModule.pas` para gerenciar a conexão com o banco de dados.  
@@ -31,6 +27,7 @@ Você pode customizar a conexão diretamente pelo Object Inspector ou via códig
    - Escolha o provedor adequado (ex.: `Microsoft OLE DB Provider for SQL Server`).
    - Informe o servidor, banco de dados, usuário e senha.
    - Teste a conexão antes de salvar.
+
 ### 🔧 Configuração via código
 Você também pode definir a conexão programaticamente no evento `OnCreate` do DataModule:
 
@@ -47,17 +44,3 @@ begin
   ADOConnection1.LoginPrompt := False;
   ADOConnection1.Connected := True;
 end;
-Exemplo de ConnectionString:
-
-
-```sql
-CREATE TABLE produto (
-    id INT IDENTITY(1,1) PRIMARY KEY,
-    nome_produto VARCHAR(50) NOT NULL,
-    preco DECIMAL(10,2) NOT NULL,
-    quantidade INT NOT NULL,
-    foto_produto VARBINARY(MAX),
-    id_categoria INT,
-    CONSTRAINT FK_produto_categoria
-        FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
-);
