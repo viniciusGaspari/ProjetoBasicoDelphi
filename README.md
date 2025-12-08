@@ -39,8 +39,5 @@ CREATE TABLE produto (
     nome_produto VARCHAR(50) NOT NULL,
     preco DECIMAL(10,2) NOT NULL,
     quantidade INT NOT NULL,
-    foto_produto VARBINARY(MAX),
-    id_categoria INT,
-    CONSTRAINT FK_produto_categoria
-        FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
+    foto_produto VARBINARY(MAX)
 );
