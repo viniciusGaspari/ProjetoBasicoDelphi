@@ -18,6 +18,38 @@ Ele permite cadastrar, editar, excluir e visualizar produtos em uma tabela exibi
 
 Para que o projeto funcione corretamente, crie a tabela `produto` no banco de dados com a seguinte definição:
 
+## ⚙️ Configuração da Conexão com o Banco de Dados (ADOConnection)
+
+O projeto utiliza um **ADOConnection** localizado no `uDataModule.pas` para gerenciar a conexão com o banco de dados.  
+Você pode customizar a conexão diretamente pelo Object Inspector ou via código.
+
+### 🔧 Configuração pelo Object Inspector
+1. Abra o arquivo `uDataModule.pas` no Delphi.
+2. Selecione o componente `ADOConnection1`.
+3. No Object Inspector, configure a propriedade **ConnectionString**:
+   - Clique em `...` para abrir o assistente.
+   - Escolha o provedor adequado (ex.: `Microsoft OLE DB Provider for SQL Server`).
+   - Informe o servidor, banco de dados, usuário e senha.
+   - Teste a conexão antes de salvar.
+### 🔧 Configuração via código
+Você também pode definir a conexão programaticamente no evento `OnCreate` do DataModule:
+
+```delphi
+procedure TDataModule1.DataModuleCreate(Sender: TObject);
+begin
+  ADOConnection1.ConnectionString :=
+    'Provider=SQLOLEDB.1;' +
+    'Persist Security Info=False;' +
+    'User ID=seu_usuario;' +
+    'Password=sua_senha;' +
+    'Initial Catalog=nome_do_banco;' +
+    'Data Source=SEU_SERVIDOR;';
+  ADOConnection1.LoginPrompt := False;
+  ADOConnection1.Connected := True;
+end;
+Exemplo de ConnectionString:
+
+
 ```sql
 CREATE TABLE produto (
     id INT IDENTITY(1,1) PRIMARY KEY,
