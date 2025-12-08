@@ -1,0 +1,71 @@
+unit datamodule;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB;
+
+type
+  TuDataModule = class(TDataModule)
+    adoConnection: TADOConnection;
+    qryVenda: TADOQuery;
+    dsVenda: TDataSource;
+    qryProduto: TADOQuery;
+    dsProduto: TDataSource;
+    qryProdutoid: TAutoIncField;
+    qryProdutocódigo: TIntegerField;
+    qryProdutonome_produto: TStringField;
+    qryProdutopreco: TBCDField;
+    qryProdutoquantidade: TIntegerField;
+    qryVendaid: TAutoIncField;
+    qryVendadata_venda: TWideStringField;
+    qryVendaproduto_id: TIntegerField;
+    qryVendaquantidade: TIntegerField;
+    qryVendacpf: TStringField;
+    qryVendavalor_unitario: TBCDField;
+    qryVendavalor_total: TFMTBCDField;
+    qryProdutoDeleteById: TADOQuery;
+    AutoIncField1: TAutoIncField;
+    IntegerField1: TIntegerField;
+    StringField1: TStringField;
+    BCDField1: TBCDField;
+    IntegerField2: TIntegerField;
+  private
+    function GetConnectionString: String;
+    { Private declarations }
+  public
+    { Public declarations }
+    constructor Create(AOwner: TComponent);
+  end;
+
+var
+  uDataModule: TuDataModule;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+{$R *.dfm}
+
+{ TuDataModule }
+
+constructor TuDataModule.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  qryProduto.Connection := adoConnection;
+  qryProduto.SQL.Text := 'SELECT * FROM produto';
+  qryProduto.Open;
+
+  dsProduto.DataSet := qryProduto;
+  ShowMessage('UDATAMODULE CRIADO');
+end;
+
+
+
+function TuDataModule.GetConnectionString:String;
+  begin
+    Result :=
+    'Provider=SQLOLEDB;Data Source=192.168.15.11;Initial Catalog=vendas;User ID=sa;Password=123;';
+  end;
+
+end.

@@ -1,0 +1,63 @@
+unit heranca;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.ExtCtrls, Data.DB,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Mask, Vcl.Buttons, Vcl.DBCtrls, datamodule;
+
+type
+  TfHistoricoVendas = class(TForm)
+    PageControl1: TPageControl;
+    bottomPanel: TPanel;
+    Consulta: TTabSheet;
+    topPanel: TPanel;
+    Editar: TTabSheet;
+    dbGrid: TDBGrid;
+    MaskEdit1: TMaskEdit;
+    orderedByLabel: TLabel;
+    orderedByParam: TLabel;
+    bbtnNovo: TBitBtn;
+    bbtnBuscar: TBitBtn;
+    bbtnEditar: TBitBtn;
+    bbtnGravar: TBitBtn;
+    bbtnCancelar: TBitBtn;
+    bbtnFechar: TBitBtn;
+    dbNavigator: TDBNavigator;
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure bbtnFecharClick(Sender: TObject);
+    procedure orderedByParamClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fHistoricoVendas: TfHistoricoVendas;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfHistoricoVendas.bbtnFecharClick(Sender: TObject);
+  begin
+    Close;
+  end;
+
+procedure TfHistoricoVendas.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+  begin
+    FreeAndNil(uDataModule);
+  end;
+
+procedure TfHistoricoVendas.FormCreate(Sender: TObject);
+  begin
+    uDataModule := TuDataModule.ProdutoDataBase(Self);
+    dbGrid.DataSource := uDataModule.dsProduto;
+  end;
+
+
+end.

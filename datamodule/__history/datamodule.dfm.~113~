@@ -1,0 +1,354 @@
+﻿object uDataModule: TuDataModule
+  Height = 480
+  Width = 640
+  object adoConnection: TADOConnection
+    Connected = True
+    ConnectionString = 
+      'Provider=SQLOLEDB;Data Source=192.168.15.9;Initial Catalog=venda' +
+      's;User ID=sa;Password=123;'
+    LoginPrompt = False
+    Provider = 'SQLOLEDB.1'
+    Left = 32
+    Top = 8
+  end
+  object qryVenda: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM venda')
+    Left = 72
+    Top = 72
+    object qryVendaid: TAutoIncField
+      DisplayLabel = 'ID'
+      FieldName = 'id'
+      ReadOnly = True
+    end
+    object qryVendadata_venda: TWideStringField
+      DisplayLabel = 'Data de Venda'
+      FieldName = 'data_venda'
+      Size = 10
+    end
+    object qryVendaproduto_id: TIntegerField
+      DisplayLabel = 'ID do Produto'
+      FieldName = 'produto_id'
+    end
+    object qryVendaquantidade: TIntegerField
+      DisplayLabel = 'Quantidade'
+      FieldName = 'quantidade'
+    end
+    object qryVendacpf: TStringField
+      DisplayLabel = 'CPF Do Cliente'
+      FieldName = 'cpf'
+      Size = 11
+    end
+    object qryVendavalor_unitario: TBCDField
+      DisplayLabel = 'Valor Unit'#225'rio'
+      FieldName = 'valor_unitario'
+      Precision = 10
+      Size = 2
+    end
+    object qryVendavalor_total: TFMTBCDField
+      DisplayLabel = 'Valor Total da Compra'
+      FieldName = 'valor_total'
+      ReadOnly = True
+      Precision = 21
+      Size = 2
+    end
+  end
+  object dsVenda: TDataSource
+    DataSet = qryVenda
+    Left = 16
+    Top = 72
+  end
+  object qryProduto: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM produto')
+    Left = 88
+    Top = 136
+    object qryProdutoid: TAutoIncField
+      DisplayLabel = 'ID'
+      FieldName = 'id'
+      ReadOnly = True
+    end
+    object qryProdutocódigo: TIntegerField
+      DisplayLabel = 'C'#243'digo'
+      FieldName = 'codigo'
+    end
+    object qryProdutonome_produto: TStringField
+      DisplayLabel = 'Nome do Produto'
+      FieldName = 'nome_produto'
+      Size = 50
+    end
+    object qryProdutopreco: TBCDField
+      DisplayLabel = 'Pre'#231'o'
+      FieldName = 'preco'
+      Precision = 10
+      Size = 2
+    end
+    object qryProdutoquantidade: TIntegerField
+      DisplayLabel = 'Quantidade'
+      FieldName = 'quantidade'
+    end
+  end
+  object dsProduto: TDataSource
+    DataSet = qryProduto
+    Left = 16
+    Top = 136
+  end
+  object qryProdutoDeleteById: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    Parameters = <
+      item
+        Name = 'id'
+        Attributes = [paSigned]
+        DataType = ftInteger
+        Precision = 10
+        Size = 4
+        Value = Null
+      end>
+    SQL.Strings = (
+      'DELETE FROM produto WHERE id = :id')
+    Left = 184
+    Top = 136
+    object AutoIncField1: TAutoIncField
+      DisplayLabel = 'ID'
+      FieldName = 'id'
+      ReadOnly = True
+    end
+    object IntegerField1: TIntegerField
+      DisplayLabel = 'C'#243'digo'
+      FieldName = 'codigo'
+    end
+    object StringField1: TStringField
+      DisplayLabel = 'Nome do Produto'
+      FieldName = 'nome_produto'
+      Size = 50
+    end
+    object BCDField1: TBCDField
+      DisplayLabel = 'Pre'#231'o'
+      FieldName = 'preco'
+      Precision = 10
+      Size = 2
+    end
+    object IntegerField2: TIntegerField
+      DisplayLabel = 'Quantidade'
+      FieldName = 'quantidade'
+    end
+  end
+  object qryProdutoInsert: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    Parameters = <
+      item
+        Name = 'codigo'
+        Attributes = [paSigned, paNullable]
+        DataType = ftInteger
+        Precision = 10
+        Size = 4
+        Value = Null
+      end
+      item
+        Name = 'nome_produto'
+        DataType = ftString
+        NumericScale = 255
+        Precision = 255
+        Size = 50
+        Value = Null
+      end
+      item
+        Name = 'preco'
+        Attributes = [paSigned]
+        DataType = ftBCD
+        NumericScale = 2
+        Precision = 10
+        Size = 19
+        Value = Null
+      end
+      item
+        Name = 'quantidade'
+        Attributes = [paSigned]
+        DataType = ftInteger
+        Precision = 10
+        Size = 4
+        Value = Null
+      end
+      item
+        Name = 'foto_produto'
+        Attributes = [paNullable, paLong]
+        DataType = ftVarBytes
+        NumericScale = 255
+        Precision = 255
+        Size = 2147483647
+        Value = Null
+      end>
+    SQL.Strings = (
+      'INSERT INTO produto'
+      '(codigo, nome_produto, preco, quantidade, foto_produto)'
+      'values'
+      '(:codigo, :nome_produto, :preco, :quantidade, :foto_produto);')
+    Left = 296
+    Top = 136
+    object AutoIncField2: TAutoIncField
+      DisplayLabel = 'ID'
+      FieldName = 'id'
+      ReadOnly = True
+    end
+    object IntegerField3: TIntegerField
+      DisplayLabel = 'C'#243'digo'
+      FieldName = 'codigo'
+    end
+    object StringField2: TStringField
+      DisplayLabel = 'Nome do Produto'
+      FieldName = 'nome_produto'
+      Size = 50
+    end
+    object BCDField2: TBCDField
+      DisplayLabel = 'Pre'#231'o'
+      FieldName = 'preco'
+      Precision = 10
+      Size = 2
+    end
+    object IntegerField4: TIntegerField
+      DisplayLabel = 'Quantidade'
+      FieldName = 'quantidade'
+    end
+  end
+  object qryProdutoGetEntity: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    Parameters = <
+      item
+        Name = 'id'
+        Attributes = [paSigned]
+        DataType = ftInteger
+        Precision = 10
+        Size = 4
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT * FROM produto WHERE id = :id')
+    Left = 400
+    Top = 136
+    object AutoIncField3: TAutoIncField
+      DisplayLabel = 'ID'
+      FieldName = 'id'
+      ReadOnly = True
+    end
+    object IntegerField5: TIntegerField
+      DisplayLabel = 'C'#243'digo'
+      FieldName = 'codigo'
+    end
+    object StringField3: TStringField
+      DisplayLabel = 'Nome do Produto'
+      FieldName = 'nome_produto'
+      Size = 50
+    end
+    object BCDField3: TBCDField
+      DisplayLabel = 'Pre'#231'o'
+      FieldName = 'preco'
+      Precision = 10
+      Size = 2
+    end
+    object IntegerField6: TIntegerField
+      DisplayLabel = 'Quantidade'
+      FieldName = 'quantidade'
+    end
+    object qryProdutoGetEntityfoto_produto: TBlobField
+      FieldName = 'foto_produto'
+    end
+  end
+  object qryProdutoEdit: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    Parameters = <
+      item
+        Name = 'codigo'
+        Attributes = [paSigned, paNullable]
+        DataType = ftInteger
+        Precision = 10
+        Size = 4
+        Value = Null
+      end
+      item
+        Name = 'nome_produto'
+        DataType = ftString
+        NumericScale = 255
+        Precision = 255
+        Size = 50
+        Value = Null
+      end
+      item
+        Name = 'preco'
+        Attributes = [paSigned]
+        DataType = ftBCD
+        NumericScale = 2
+        Precision = 10
+        Size = 19
+        Value = Null
+      end
+      item
+        Name = 'quantidade'
+        Attributes = [paSigned]
+        DataType = ftInteger
+        Precision = 10
+        Size = 4
+        Value = Null
+      end
+      item
+        Name = 'ftBlob'
+        Attributes = [paNullable, paLong]
+        DataType = ftVarBytes
+        NumericScale = 255
+        Precision = 255
+        Size = 2147483647
+        Value = Null
+      end
+      item
+        Name = 'id'
+        Attributes = [paSigned]
+        DataType = ftInteger
+        Precision = 10
+        Size = 4
+        Value = Null
+      end>
+    SQL.Strings = (
+      'UPDATE produto'
+      'SET'
+      ''
+      '    codigo       = :codigo,'
+      '    nome_produto = :nome_produto,'
+      '    preco        = :preco,'
+      '    quantidade   = :quantidade,'
+      '    foto_produto = :ftBlob'
+      ''
+      ''
+      'WHERE id = :id;')
+    Left = 512
+    Top = 128
+    object AutoIncField4: TAutoIncField
+      DisplayLabel = 'ID'
+      FieldName = 'id'
+      ReadOnly = True
+    end
+    object IntegerField7: TIntegerField
+      DisplayLabel = 'C'#243'digo'
+      FieldName = 'codigo'
+    end
+    object StringField4: TStringField
+      DisplayLabel = 'Nome do Produto'
+      FieldName = 'nome_produto'
+      Size = 50
+    end
+    object BCDField4: TBCDField
+      DisplayLabel = 'Pre'#231'o'
+      FieldName = 'preco'
+      Precision = 10
+      Size = 2
+    end
+  end
+end

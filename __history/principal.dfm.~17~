@@ -1,0 +1,38 @@
+object fPrincipal: TfPrincipal
+  Left = 0
+  Top = 0
+  Caption = 'Projeto B'#225'sico Feito Por Vin'#237'cius de Gaspari Mennuccelli'
+  ClientHeight = 441
+  ClientWidth = 624
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  Menu = MainMenu1
+  TextHeight = 15
+  object MainMenu1: TMainMenu
+    Left = 304
+    Top = 224
+    object Venda1: TMenuItem
+      Caption = 'Venda'
+      object CadastrarVenda1: TMenuItem
+        Caption = 'Cadastrar Venda'
+      end
+      object HistricodeVendas2: TMenuItem
+        Caption = 'Consultar Hist'#243'rico de Vendas'
+      end
+    end
+    object Detalhes1: TMenuItem
+      Caption = 'Produto'
+      object ConsultarProdutos1: TMenuItem
+        Caption = 'Cadastrar Produto'
+      end
+      object ConsultarProdutos2: TMenuItem
+        Caption = 'Consultar Produtos Cadastrados'
+        OnClick = ConsultarProdutos2Click
+      end
+    end
+  end
+end

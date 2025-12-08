@@ -1,0 +1,75 @@
+inherited fHistoricoVendas: TfHistoricoVendas
+  Caption = 'Consultar Hist'#243'rico de Vendas'
+  StyleElements = [seFont, seClient, seBorder]
+  OnClose = FormClose
+  OnCreate = FormCreate
+  TextHeight = 15
+  inherited PageControl1: TPageControl
+    inherited Consulta: TTabSheet
+      inherited topPanel: TPanel
+        StyleElements = [seFont, seClient, seBorder]
+        inherited orderedByLabel: TLabel
+          StyleElements = [seFont, seClient, seBorder]
+        end
+        inherited orderedByParam: TLabel
+          StyleElements = [seFont, seClient, seBorder]
+        end
+        inherited mskeBuscar: TMaskEdit
+          StyleElements = [seFont, seClient, seBorder]
+        end
+      end
+      inherited dbGrid: TDBGrid
+        DataSource = uDataModule.dsVenda
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'id'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'data_venda'
+            Width = 93
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'produto_id'
+            Width = 95
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'quantidade'
+            Width = 74
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'cpf'
+            Width = 133
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'valor_unitario'
+            Width = 88
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'valor_total'
+            Width = 141
+            Visible = True
+          end>
+      end
+    end
+  end
+  inherited bottomPanel: TPanel
+    StyleElements = [seFont, seClient, seBorder]
+    ExplicitTop = 594
+    inherited dbNavigator: TDBNavigator
+      Hints.Strings = ()
+    end
+  end
+end

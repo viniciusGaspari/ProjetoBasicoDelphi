@@ -1,0 +1,42 @@
+unit heranca;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.ExtCtrls, Data.DB,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Mask, Vcl.Buttons, Vcl.DBCtrls, datamodule;
+
+type
+  TfHeranca = class(TForm)
+    pgControl: TPageControl;
+    Consulta: TTabSheet;
+    bottomPanel: TPanel;
+    bbtnNovo: TBitBtn;
+    bbtnGravar: TBitBtn;
+    orderedByLabel: TLabel;
+    bbtnCancelar: TBitBtn;
+    bbtnFechar: TBitBtn;
+    dbNavigator: TDBNavigator;
+    mskeBuscar: TMaskEdit;
+    dbGrid: TDBGrid;
+    procedure bbtnFecharClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fHeranca: TfHeranca;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfHeranca.bbtnFecharClick(Sender: TObject);
+  begin
+    Close;
+  end;
+
+end.

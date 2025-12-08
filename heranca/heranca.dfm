@@ -1,0 +1,152 @@
+object fHeranca: TfHeranca
+  Left = 0
+  Top = 0
+  BorderStyle = bsDialog
+  Caption = 'Heran'#231'a'
+  ClientHeight = 639
+  ClientWidth = 1113
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  Position = poScreenCenter
+  TextHeight = 15
+  object pgControl: TPageControl
+    Left = 0
+    Top = 0
+    Width = 1113
+    Height = 592
+    ActivePage = Consulta
+    Align = alClient
+    TabOrder = 0
+    object Consulta: TTabSheet
+      Caption = 'Consulta'
+      object topPanel: TPanel
+        Left = 0
+        Top = 0
+        Width = 1105
+        Height = 89
+        Align = alTop
+        TabOrder = 0
+        object orderedByLabel: TLabel
+          Left = 32
+          Top = 20
+          Width = 77
+          Height = 15
+          Caption = 'Ordenado por:'
+        end
+        object orderedByParam: TLabel
+          Left = 115
+          Top = 20
+          Width = 3
+          Height = 15
+          Hint = 'Clique na coluna pra filtrar'
+        end
+        object mskeBuscar: TMaskEdit
+          Left = 32
+          Top = 34
+          Width = 217
+          Height = 23
+          TabOrder = 0
+          Text = ''
+          TextHint = 'Digite Sua Busca'
+        end
+      end
+      object dbGrid: TDBGrid
+        Left = 0
+        Top = 89
+        Width = 1105
+        Height = 473
+        Align = alClient
+        DataSource = uDataModule.dsProduto
+        TabOrder = 1
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -12
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'id'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'nome_produto'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'preco'
+            Width = 64
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'quantidade'
+            Width = 64
+            Visible = True
+          end>
+      end
+    end
+    object Cadastrar: TTabSheet
+      Caption = 'Cadastrar'
+      ImageIndex = 1
+    end
+  end
+  object bottomPanel: TPanel
+    Left = 0
+    Top = 592
+    Width = 1113
+    Height = 47
+    Align = alBottom
+    TabOrder = 1
+    object bbtnNovo: TBitBtn
+      Left = 36
+      Top = 6
+      Width = 125
+      Height = 25
+      Caption = 'NOVO'
+      Glyph.Data = {
+        36030000424D3603000000000000360000002800000010000000100000000100
+        18000000000000030000120B0000120B00000000000000000000FF00FF9A5314
+        9A53149A53147B61418686868787878080809494948787877E7E7E6E6E6E7B61
+        419640047F3F087F3F08FF00FF9C5414C66C1CC76C1D7B614183838396400496
+        4004B7B7B7BCBCBCA6A6A68787877B614196400495480A91440BFF00FFA65B17
+        CA711FCB711F7B61417E7E7E964004964004C6C6C6CFCFCFB5B5B59292927B61
+        4196400495490B91440BFF00FFA95F19CE7622CF77227B614179797996400496
+        4004D3D3D3E3E3E3C8C8C89D9D9D7B6141964004974B0B92450CFF00FFAC631C
+        D27C27D37E297B6141747474747474747474D5D5D5F6F6F6DBDBDBABABAB7B61
+        41964004984C0C94470DFF00FFAF6B28D6883AD78A3DA871347B61417B61417B
+        61417B61417B61417B61417B6141845121904709A0541195480DFF00FFB27436
+        CA8444D1AA89CFA887CDA584CBA381C99F7CC69B77C59975C49874C39774C296
+        73C19573B6611F96490EFF00FFB57D45D19D6EF0F0F0EDEDEDE9E9E9E5E5E5E2
+        E2E2DEDEDEDBDBDBD7D7D7D6D6D6D6D6D6D6D6D6BB7843974B0EFF00FFB88552
+        D09F75E4E4E4E1E1E1DEDEDEDCDCDCD9D9D9D6D6D6D4D4D4D1D1D1CECECECCCC
+        CCCACACAB97640974C0FFF00FFBB8C5ED8AB84FEFEFEFCFCFCF9F9F9F5F5F5F2
+        F2F2EEEEEEEBEBEBE7E7E7E3E3E3E0E0E0DCDCDCBD7A45984C0FFF00FFBC9167
+        D4A985E8E8E8E8E8E8E8E8E8E7E7E7E5E5E5E2E2E2E0E0E0DDDDDDDADADAD8D8
+        D8D5D5D5BC7943984C0FFF00FFBD936BDAB18EFEFEFEFEFEFEFEFEFEFEFEFEFE
+        FEFEFDFDFDFAFAFAF7F7F7F3F3F3F0F0F0ECECECC27F49994D10FF00FFBD9268
+        D4AA86E8E8E8E8E8E8E8E8E8E8E8E8E8E8E8E8E8E8E8E8E8E8E8E8E6E6E6E4E4
+        E4E1E1E1BF7C46984D0FFF00FFBD9268CA9B75FEFEFEFEFEFEFEFEFEFEFEFEFE
+        FEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFBFBFBBC7B498F450CFF00FFBD9268
+        CA9B754229924229924229924229924229924229924229924229924229924229
+        92422992BC7B498F450CFF00FFB1805D975C454D1C744D1C744D1C744D1C744D
+        1C744D1C744D1C744D1C744D1C744D1C744D1C74853D2687410A}
+      TabOrder = 0
+    end
+    object bbtnFechar: TBitBtn
+      Left = 957
+      Top = 12
+      Width = 125
+      Height = 25
+      Caption = 'FECHAR'
+      TabOrder = 1
+      OnClick = bbtnFecharClick
+    end
+  end
+end

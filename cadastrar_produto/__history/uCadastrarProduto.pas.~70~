@@ -1,0 +1,101 @@
+unit uCadastrarProduto;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls,
+  RxToolEdit, RxCurrEdit, Vcl.ExtDlgs, Vcl.Imaging.jpeg, Vcl.Imaging.pngimage,
+  Vcl.Buttons, datamodule, cProduto, Data.DB, Data.Win.ADODB;
+
+type
+  TfCadastrarProduto = class(TForm)
+    lbleNomeProduto: TLabeledEdit;
+    edtQuantidade: TEdit;
+    cePreco: TCurrencyEdit;
+    lblPreco: TLabel;
+    lblQuantidade: TLabel;
+    ComboBox1: TComboBox;
+    img: TImage;
+    lblFoto: TLabel;
+    openPictureDialog: TOpenPictureDialog;
+    bbtnCadastrar: TBitBtn;
+    edtCodigo: TEdit;
+    lblCodigo: TLabel;
+    procedure imgClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure bbtnCadastrarClick(Sender: TObject);
+  private
+    { Private declarations }
+    cProduto: TcProduto;
+    MS: TMemoryStream;
+  public
+    { Public declarations }
+  end;
+
+var
+  fCadastrarProduto: TfCadastrarProduto;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfCadastrarProduto.bbtnCadastrarClick(Sender: TObject);
+  begin
+    cProduto := TcProduto.Create(
+      StrToInt(edtCodigo.Text),
+      lbleNomeProduto.Text,
+      StrToFloat(cePreco.Text),
+      StrToInt(edtQuantidade.Text)
+    );
+
+    ms := TMemoryStream.Create;
+    try
+      img.Picture.Graphic.SaveToStream(ms);
+      ms.Position := 0;
+
+      uDataModule.qryProduto.SQL.Text :=
+        'INSERT INTO produto (codigo, nome_produto, preco, quantidade, foto_produto) ' +
+        'VALUES (:codigo, :nomeProduto, :preco, :quantidade, :foto)';
+
+      with uDataModule.qryProduto.Parameters do
+      begin
+        ParamByName('codigo').Value := cProduto.Codigo;
+        ParamByName('nomeProduto').Value := cProduto.NomeProduto;
+        ParamByName('preco').Value := cProduto.Preco;
+        ParamByName('quantidade').Value := cProduto.Quantidade;
+        // aqui é o ponto importante:
+        ParamByName('foto').LoadFromStream(ms, ftBlob);
+      end;
+
+      uDataModule.qryProduto.ExecSQL;
+      ShowMessage('Produto cadastrado com sucesso!');
+      uDataModule.qryProduto.Close;
+      uDataModule.qryProduto.Open;
+    finally
+      ms.Free;
+    end;
+end;
+
+procedure TfCadastrarProduto.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+  begin
+    FreeAndNil(uDataModule);
+    FreeAndNil(cProduto);
+  end;
+
+procedure TfCadastrarProduto.FormCreate(Sender: TObject);
+  begin
+    uDataModule := TuDataModule.ProdutoDataBase(Self);
+    img.Picture.LoadFromFile('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg');
+    openPictureDialog.Filter := 'Arquivos PNG e JPG|*.png;*.jpg';
+  end;
+
+procedure TfCadastrarProduto.imgClick(Sender: TObject);
+  begin
+      if openPictureDialog.Execute then
+    img.Picture.LoadFromFile(openPictureDialog.FileName);
+  end;
+
+end.
