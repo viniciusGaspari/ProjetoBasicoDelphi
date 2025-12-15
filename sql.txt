@@ -3,31 +3,51 @@ CREATE TABLE produto (
     nome_produto VARCHAR(50) NOT NULL,
     preco DECIMAL(10,2) NOT NULL,
     quantidade INT NOT NULL,
-    foto_produto VARBINARY(MAX),
-    id_categoria INT,  
-    CONSTRAINT FK_produto_categoria
-    FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
+    foto_produto VARCHAR(100)
 );
 
+CREATE TABLE carrinho_venda (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    id_produto INT,
+    nome_produto varchar(300),
+    quantidade INT DEFAULT 1,
+    preco_unitario DECIMAL(10,2),
+    data_inclusao DATETIME NOT NULL DEFAULT GETDATE(),
+    preco_total AS (quantidade * preco_unitario), 
+    CONSTRAINT FK_carrinho_produto FOREIGN KEY (id_produto) REFERENCES produto(id)
+);
+
+CREATE TRIGGER trg_carrinho_venda_preco
+ON carrinho_venda
+AFTER INSERT
+AS
+BEGIN
+    UPDATE cv
+    SET cv.preco_unitario = p.preco
+    FROM carrinho_venda cv
+    INNER JOIN inserted i ON cv.id = i.id
+    INNER JOIN produto p ON cv.id_produto = p.id;
+END;
+GO
+
+CREATE TRIGGER trg_carrinho_venda_preco
+ON carrinho_venda
+AFTER INSERT
+AS
+BEGIN
+    UPDATE cv
+    SET cv.preco_unitario = p.preco
+    FROM carrinho_venda cv
+    INNER JOIN inserted i ON cv.id = i.id
+    INNER JOIN produto p ON cv.id_produto = p.id;
+END;
 
 CREATE TABLE venda (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    data_venda DATE NOT NULL,
-    produto_id INT NOT NULL,
-    quantidade INT NOT NULL,
-    cpf VARCHAR(11) NOT NULL,
-    valor_unitario DECIMAL(10,2) NOT NULL,
-    valor_total AS (quantidade * valor_unitario) PERSISTED,
-    CONSTRAINT fk_venda_produto FOREIGN KEY (produto_id) REFERENCES produto(id)
-);
-
-CREATE TABLE categoria (
-    id_categoria INT PRIMARY KEY IDENTITY(1,1),
-    nome_categoria VARCHAR(100) NOT NULL
+    data_venda DATETIME NOT NULL DEFAULT GETDATE(),
+    valor_total DECIMAL(10,2) NOT NULL
 );
 
 
-INSERT INTO produto
-(nome_produto, preco, quantidade)
-VALUES
-('lápis', 2.00, 100);
+
+

@@ -1,4 +1,4 @@
-program ProjetoBasico;
+﻿program ProjetoBasico;
 
 uses
   Vcl.Forms,
@@ -7,7 +7,8 @@ uses
   Enter in 'terceiro\Enter.pas',
   uHistoricoProduto in 'historico_produto\uHistoricoProduto.pas' {fHistoricoProduto},
   datamodule in 'datamodule\datamodule.pas' {uDataModule: TDataModule},
-  cProduto in 'classes\cProduto.pas';
+  cProduto in 'classes\cProduto.pas',
+  cVenda in 'classes\cVenda.pas';
 
 {$R *.res}
 
@@ -16,9 +17,8 @@ begin
   Application.CreateForm(TuDataModule, uDataModule);
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TfPrincipal, fPrincipal);
-  Application.CreateForm(TuDataModule, uDataModule);
   Application.CreateForm(TfHeranca, fHeranca);
   Application.CreateForm(TfHistoricoProduto, fHistoricoProduto);
-  Application.CreateForm(TuDataModule, uDataModule);
   Application.Run;
 end.
+
