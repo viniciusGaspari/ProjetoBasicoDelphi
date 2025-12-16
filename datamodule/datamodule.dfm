@@ -3,12 +3,11 @@
   Height = 846
   Width = 1126
   object adoConnection: TADOConnection
-    Connected = True
     ConnectionString = 
-      'Provider=SQLOLEDB;'#10'Data Source=192.168.15.9;'#10'Initial Catalog=ven' +
-      'das;'#10'User ID=sa;'#10'Password=123;'
+      'Provider=SQLOLEDB;Data Source=192.168.15.6;Initial Catalog=venda' +
+      's;User ID=sa;Password=123;'
     LoginPrompt = False
-    Provider = 'SQLOLEDB.1'
+    Provider = 'SQLOLEDB'
     Left = 32
     Top = 8
   end
@@ -37,6 +36,7 @@
     object qryProdutopreco: TBCDField
       DisplayLabel = 'Pre'#231'o'
       FieldName = 'preco'
+      DisplayFormat = 'R$ #,##0.00'
       Precision = 10
       Size = 2
     end
@@ -522,5 +522,13 @@
       Precision = 21
       Size = 2
     end
+  end
+  object qryCarrinhoVenda: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    DataSource = dsCarrinhoVenda
+    Parameters = <>
+    Left = 328
+    Top = 352
   end
 end

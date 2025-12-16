@@ -1,0 +1,177 @@
+unit cVenda;
+
+interface
+
+uses
+  System.Classes, Vcl.Controls, Vcl.ExtCtrls, Vcl.Dialogs, System.SysUtils, datamodule, Data.DB, cProduto;
+
+type
+  TcVenda = class
+  private
+    FId: Integer;
+    FIdProduto: Integer;
+    FPrecoUnitario: Double;
+    FDataInclusao: TDateTime;
+    FPrecoTotal: Double;
+
+    function getId: Integer;
+    procedure setId(const Value: Integer);
+    function getIdProduto: Integer;
+    procedure setIdProduto(const Value: Integer);
+    function getPrecoUnitario: Double;
+    procedure SetPrecoUnitario(const Value: Double);
+    function getDataInclusao: TDateTime;
+    procedure setDataInclusao(const Value: TDateTime);
+    function getPrecoTotal: Double;
+    procedure setPrecoTotal(const Value: Double);
+
+  public
+    constructor Create; overload;
+    function Insert(idProduto: Integer; nomeProduto: string;
+  preco: Double; quantidade: Integer; precoTotal: Double; quantidadeProdutoVenda: integer): Double;
+    procedure clearTable;
+
+    property Id: Integer read getId write setId;
+    property IdProduto: Integer read getIdProduto write setIdProduto;
+    property PrecoUnitario: Double read getPrecoUnitario write SetPrecoUnitario;
+    property DataInclusao: TDateTime read getDataInclusao write setDataInclusao;
+    property PrecoTotal: Double read getPrecoTotal write setPrecoTotal;
+  end;
+
+implementation
+
+{ TcVenda }
+
+constructor TcVenda.Create;
+begin
+  inherited;
+end;
+
+procedure TcVenda.clearTable;
+  begin
+    with uDataModule do
+      begin
+        clearCarrinhoVendaTable.ExecSQL;
+        qryCarrinhoSelectAll.Close;
+        qryCarrinhoSelectAll.Open;
+      end;
+  end;
+
+function TcVenda.Insert(idProduto: Integer; nomeProduto: string;
+  preco: Double; quantidade: Integer; precoTotal: Double; quantidadeProdutoVenda: Integer): Double;
+var
+  ultimoValor: Double;
+  cProduto: TcProduto;
+  produtoEncontrado: TcProduto;
+begin
+  cProduto := TcProduto.Create;
+  produtoEncontrado := cProduto.getEntity(idProduto);
+
+  with uDataModule.qryProduto do
+  begin
+    Close;
+    SQL.Text := 'SELECT * FROM produto WHERE id = :idProduto';
+    Parameters.ParamByName('idProduto').Value := idProduto;
+    Open;
+  end;
+
+  if produtoEncontrado.quantidade <= 0 then
+  begin
+    ShowMessage('Produto Sem Estoque');
+  end
+  else
+  begin
+    // Insere no carrinho
+    with uDataModule.qryCarrinhoInsert do
+    begin
+      Close;
+      Parameters.ParamByName('id_produto').Value := idProduto;
+      Parameters.ParamByName('quantidade').Value := quantidade;
+      Parameters.ParamByName('nomeProduto').Value := nomeProduto;
+      Parameters.ParamByName('preco').Value := preco;
+      ExecSQL;
+    end;
+
+    // Busca último valor
+    with uDataModule.qryCarrinhoVenda do
+    begin
+      Close;
+      SQL.Text := 'SELECT TOP 1 preco_total FROM carrinho_venda ORDER BY data_inclusao DESC';
+      Open;
+
+      if not IsEmpty then
+        ultimoValor := FieldByName('preco_total').AsFloat
+      else
+        ultimoValor := 0;
+
+      if precoTotal = 0 then
+        Result := preco
+      else
+        Result := ultimoValor + precoTotal;
+    end;
+
+    // Atualiza estoque
+    produtoEncontrado.quantidade := produtoEncontrado.quantidade - quantidadeProdutoVenda;
+    cProduto.saveEntityToDBAlreadyExists(produtoEncontrado);
+
+    // Atualiza grid
+    uDataModule.qryCarrinhoSelectAll.Close;
+    uDataModule.qryCarrinhoSelectAll.Open;
+  end;
+end;
+
+
+
+
+function TcVenda.getId: Integer;
+begin
+  Result := FId;
+end;
+
+procedure TcVenda.setId(const Value: Integer);
+begin
+  FId := Value;
+end;
+
+function TcVenda.getIdProduto: Integer;
+begin
+  Result := FIdProduto;
+end;
+
+procedure TcVenda.setIdProduto(const Value: Integer);
+begin
+  FIdProduto := Value;
+end;
+
+function TcVenda.getPrecoUnitario: Double;
+begin
+  Result := FPrecoUnitario;
+end;
+
+procedure TcVenda.SetPrecoUnitario(const Value: Double);
+begin
+  FPrecoUnitario := Value;
+end;
+
+function TcVenda.getDataInclusao: TDateTime;
+begin
+  Result := FDataInclusao;
+end;
+
+procedure TcVenda.setDataInclusao(const Value: TDateTime);
+begin
+  FDataInclusao := Value;
+end;
+
+function TcVenda.getPrecoTotal: Double;
+begin
+  Result := FPrecoTotal;
+end;
+
+procedure TcVenda.setPrecoTotal(const Value: Double);
+begin
+  FPrecoTotal := Value;
+end;
+
+end.
+

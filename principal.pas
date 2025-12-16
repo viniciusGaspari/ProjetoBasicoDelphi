@@ -30,6 +30,8 @@ type
     Panel4: TPanel;
     mskPrecoTotal: TMaskEdit;
     Label1: TLabel;
+    Venda1: TMenuItem;
+    VendasCadastrados1: TMenuItem;
     procedure ConsultarProdutos2Click(Sender: TObject);
     procedure mskCodigoChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -52,27 +54,31 @@ implementation
 
 procedure TfPrincipal.BitBtn1Click(Sender: TObject);
 var
-  preco: string;
+  preco: string;  precoTotal: Double; texto: string;
 begin
   cProduto := TcProduto.getEntityByCodigo(StrToInt(mskCodigo.Text));
   preco := mskPreco.Text;
   Delete(preco, 1, 3);
-
-  mskPrecoTotal.Text := FloatToStr(
+  texto := mskPrecoTotal.Text;
+  Delete(texto,1,3);
+  precoTotal := StrToFloatDef(texto, 0);
+  mskPrecoTotal.Text := 'R$ '+ FloatToStr(
     cVenda.Insert(
       cProduto.id,
       mskNomeProduto.Text,
       StrToFloat(preco),
+      StrToInt(mskQuantidade.Text),
+      precoTotal,
       StrToInt(mskQuantidade.Text)
     )
-  ); uDataModule.qryCarrinhoSelectAll.Close;
-uDataModule.qryCarrinhoSelectAll.Open;
+  );
 end;
 
 procedure TfPrincipal.ConsultarProdutos2Click(Sender: TObject);
 begin
   fHistoricoProduto.ShowModal;
   cVenda.clearTable;
+  mskPrecoTotal.Text := '';
 end;
 
 procedure TfPrincipal.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -89,7 +95,7 @@ procedure TfPrincipal.FormCreate(Sender: TObject);
     dbGridPrincipal.DataSource := nil;
     dbGridPrincipal.DataSource := uDataModule.dsCarrinhoVenda;
     uDataModule.qryCarrinhoSelectAll.Open;
-
+    mskPrecoTotal.Text := '';
   end;
 
 procedure TfPrincipal.mskCodigoChange(Sender: TObject);

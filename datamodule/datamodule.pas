@@ -75,6 +75,7 @@ type
     qryCarrinhoSelectAllid: TAutoIncField;
     qryCarrinhoSelectAlldata_inclusao: TDateTimeField;
     qryCarrinhoSelectAllpreco_total: TFMTBCDField;
+    qryCarrinhoVenda: TADOQuery;
     procedure DataModuleCreate(Sender: TObject);
   private
     function GetConnectionString: String;

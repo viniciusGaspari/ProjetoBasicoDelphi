@@ -340,7 +340,7 @@ object fPrincipal: TfPrincipal
       AlignWithMargins = True
       Left = 585
       Top = 565
-      Width = 352
+      Width = 348
       Height = 36
       Alignment = taCenter
       Enabled = False
@@ -351,7 +351,7 @@ object fPrincipal: TfPrincipal
       Font.Style = []
       ParentFont = False
       TabOrder = 6
-      Text = 'TESTE'
+      Text = ''
     end
   end
   object Panel5: TPanel
@@ -418,6 +418,12 @@ object fPrincipal: TfPrincipal
       object ConsultarProdutos2: TMenuItem
         Caption = 'Produtos Cadastrados'
         OnClick = ConsultarProdutos2Click
+      end
+    end
+    object Venda1: TMenuItem
+      Caption = 'Venda'
+      object VendasCadastrados1: TMenuItem
+        Caption = 'Vendas Cadastrados'
       end
     end
   end

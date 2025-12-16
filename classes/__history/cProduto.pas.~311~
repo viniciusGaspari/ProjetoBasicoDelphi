@@ -1,0 +1,213 @@
+﻿unit cProduto;
+
+interface
+
+uses
+  System.Classes, Vcl.Controls, Vcl.ExtCtrls, Vcl.Dialogs, System.SysUtils, datamodule, Data.DB;
+
+type
+  TcProduto = class
+  private
+    FId: Integer;
+    FCodigo: Integer;
+    FNomeProduto: string;
+    FPreco: Double;
+    FQuantidade: Integer;
+    FFoto: string;
+
+    function getCodigo: Integer;
+    procedure setCodigo(const Value: Integer);
+    function getNomeProduto: string;
+    function getPreco: Double;
+    function getQuantidade: Integer;
+    function getFoto: String;
+    function getId: Integer;
+
+    procedure setNomeProduto(const Value: string);
+    procedure setPreco(const Value: Double);
+    procedure setQuantidade(const Value: Integer);
+    procedure setId(const Value: Integer);
+    procedure setFoto(const Value: String);
+
+  public
+    class function getEntityByCodigo(codigo: Integer): TcProduto;
+    class function getEntity(id: Integer): TcProduto;
+    procedure saveEntityToDataBase(codigo: Integer; nome_produto: String; preco: Double; quantidade: Integer; foto: string);
+    procedure saveEntityToDBAlreadyExists(entity: TcProduto);
+    procedure deleteColumnById(id: Integer);
+
+    constructor Create; overload;
+    constructor Create(AId: Integer; ACodigo: Integer; ANome: string;
+      APreco: Double; AQuantidade: Integer; AFoto: string); overload;
+
+  published
+    property id: Integer read getId write setId;
+    property codigo: Integer read getCodigo write setCodigo;
+    property nomeProduto: string read getNomeProduto write setNomeProduto;
+    property preco: Double read getPreco write setPreco;
+    property quantidade: Integer read getQuantidade write setQuantidade;
+    property foto: string read getFoto write setFoto;
+  end;
+
+implementation
+
+{ TcProduto }
+
+constructor TcProduto.Create;
+begin
+  inherited;
+end;
+
+constructor TcProduto.Create(AId: Integer; ACodigo: Integer; ANome: string;
+  APreco: Double; AQuantidade: Integer; AFoto: String);
+begin
+  inherited Create;
+  FId := AId;
+  FCodigo := ACodigo;
+  FNomeProduto := ANome;
+  FPreco := APreco;
+  FQuantidade := AQuantidade;
+  FFoto := AFoto;
+end;
+
+class function TcProduto.getEntityByCodigo(codigo: Integer): TcProduto;
+begin
+  with uDataModule.qryProdutoGetEntityByCodigo do
+  begin
+    Close;
+    Parameters.ParamByName('codigo').Value := codigo;
+    Open;
+    Result := TcProduto.Create(
+      FieldByName('id').AsInteger,
+      FieldByName('codigo').AsInteger,
+      FieldByName('nome_produto').AsString,
+      FieldByName('preco').AsFloat,
+      FieldByName('quantidade').AsInteger,
+      FieldByName('foto_produto').AsString
+    );
+  end;
+end;
+
+class function TcProduto.getEntity(id: Integer): TcProduto;
+begin
+  with uDataModule.qryProdutoGetEntity do
+  begin
+    Close;
+    Parameters.ParamByName('id').Value := id;
+    Open;
+    Result := TcProduto.Create(
+      FieldByName('id').AsInteger,
+      FieldByName('codigo').AsInteger,
+      FieldByName('nome_produto').AsString,
+      FieldByName('preco').AsFloat,
+      FieldByName('quantidade').AsInteger,
+      FieldByName('foto_produto').AsString
+    );
+  end;
+end;
+
+procedure TcProduto.saveEntityToDataBase(codigo: Integer; nome_produto: String;
+  preco: Double; quantidade: Integer; foto: string);
+begin
+  with uDataModule.qryProdutoInsert do
+    begin
+      Close;
+        Parameters.ParamByName('codigo').Value := codigo;
+        Parameters.ParamByName('nome_produto').Value := nome_produto;
+        Parameters.ParamByName('preco').Value := preco;
+        Parameters.ParamByName('quantidade').Value := quantidade;
+        Parameters.ParamByName('foto_produto').Value := foto;
+      ExecSQL;
+    end;
+    uDataModule.qryProduto.Refresh;
+end;
+
+procedure TcProduto.saveEntityToDBAlreadyExists(entity: TcProduto);
+begin
+  with uDataModule.qryProdutoEdit do
+  begin
+    Close;
+    Parameters.ParamByName('id').Value := entity.id;
+    Parameters.ParamByName('codigo').Value := entity.codigo;
+    Parameters.ParamByName('nome_produto').Value := entity.nomeProduto;
+    Parameters.ParamByName('preco').Value := entity.preco;
+    Parameters.ParamByName('quantidade').Value := entity.quantidade;
+    Parameters.ParamByName('foto_produto').Value := entity.foto;
+    ExecSQL;
+    ShowMessage('Alterado com sucesso!');
+    uDataModule.qryProduto.Refresh;
+  end;
+end;
+
+procedure TcProduto.deleteColumnById(id: Integer);
+begin
+  with uDataModule.qryProdutoDeleteById do
+  begin
+    Close;
+    Parameters.ParamByName('id').Value := id;
+    ExecSQL;
+  end;
+end;
+
+function TcProduto.getCodigo: Integer;
+begin
+  Result := FCodigo;
+end;
+
+procedure TcProduto.setCodigo(const Value: Integer);
+begin
+  FCodigo := Value;
+end;
+
+function TcProduto.getNomeProduto: string;
+begin
+  Result := FNomeProduto;
+end;
+
+procedure TcProduto.setNomeProduto(const Value: string);
+begin
+  FNomeProduto := Value;
+end;
+
+function TcProduto.getPreco: Double;
+begin
+  Result := FPreco;
+end;
+
+procedure TcProduto.setPreco(const Value: Double);
+begin
+  FPreco := Value;
+end;
+
+function TcProduto.getQuantidade: Integer;
+begin
+  Result := FQuantidade;
+end;
+
+procedure TcProduto.setQuantidade(const Value: Integer);
+begin
+  FQuantidade := Value;
+end;
+
+function TcProduto.getId: Integer;
+begin
+  Result := FId;
+end;
+
+procedure TcProduto.setId(const Value: Integer);
+begin
+  FId := Value;
+end;
+
+function TcProduto.getFoto: String;
+begin
+  Result := FFoto;
+end;
+
+procedure TcProduto.setFoto(const Value: String);
+begin
+  FFoto := Value;
+end;
+
+end.
+

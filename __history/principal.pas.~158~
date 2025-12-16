@@ -1,0 +1,108 @@
+unit principal;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, uHistoricoProduto, Data.DB,
+  Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtDlgs, cProduto, datamodule,
+  Vcl.Buttons, cVenda, Vcl.Imaging.jpeg;
+
+type
+  TfPrincipal = class(TForm)
+    MainMenu1: TMainMenu;
+    Detalhes1: TMenuItem;
+    ConsultarProdutos2: TMenuItem;
+    Panel6: TPanel;
+    openPictureDialog: TOpenPictureDialog;
+    Panel5: TPanel;
+    Panel1: TPanel;
+    mskCodigo: TMaskEdit;
+    mskNomeProduto: TMaskEdit;
+    Label2: TLabel;
+    Label4: TLabel;
+    mskQuantidade: TMaskEdit;
+    BitBtn1: TBitBtn;
+    Label5: TLabel;
+    img: TImage;
+    dbGridPrincipal: TDBGrid;
+    mskPreco: TMaskEdit;
+    Panel4: TPanel;
+    mskPrecoTotal: TMaskEdit;
+    Label1: TLabel;
+    procedure ConsultarProdutos2Click(Sender: TObject);
+    procedure mskCodigoChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure BitBtn1Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    { Private declarations }
+    cProduto: TcProduto;
+    cVenda: TcVenda;
+  public
+    { Public declarations }
+  end;
+
+var
+  fPrincipal: TfPrincipal;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfPrincipal.BitBtn1Click(Sender: TObject);
+var
+  preco: string;  precoTotal: Double; texto: string;
+begin
+  cProduto := TcProduto.getEntityByCodigo(StrToInt(mskCodigo.Text));
+  preco := mskPreco.Text;
+  texto := mskPrecoTotal.Text;
+  Delete(texto,1,3);
+  precoTotal := StrToFloatDef(mskPrecoTotal.Text, 0);
+  mskPrecoTotal.Text := 'R$ '+ FloatToStr(
+    cVenda.Insert(
+      cProduto.id,
+      mskNomeProduto.Text,
+      StrToFloat(preco),
+      StrToInt(mskQuantidade.Text),
+      precoTotal
+    )
+  );
+end;
+
+procedure TfPrincipal.ConsultarProdutos2Click(Sender: TObject);
+begin
+  fHistoricoProduto.ShowModal;
+  cVenda.clearTable;
+end;
+
+procedure TfPrincipal.FormClose(Sender: TObject; var Action: TCloseAction);
+  begin
+    cVenda.clearTable;
+    dbGridPrincipal.DataSource := uDataModule.dsCarrinhoVenda;
+  end;
+
+procedure TfPrincipal.FormCreate(Sender: TObject);
+  begin
+    Self.cProduto := TcProduto.Create;
+    cVenda := TcVenda.Create;
+    uDataModule.dsCarrinhoVenda.DataSet := uDataModule.qryCarrinhoSelectAll;
+    dbGridPrincipal.DataSource := nil;
+    dbGridPrincipal.DataSource := uDataModule.dsCarrinhoVenda;
+    uDataModule.qryCarrinhoSelectAll.Open;
+
+  end;
+
+procedure TfPrincipal.mskCodigoChange(Sender: TObject);
+  var
+    produtoFound: TcProduto;
+
+  begin
+     produtoFound := cProduto.getEntityByCodigo(StrToInt(mskCodigo.Text));
+     mskNomeProduto.Text := produtoFound.nomeProduto;
+     mskPreco.Text := 'R$ ' + FloatToStr(produtoFound.preco);
+     mskQuantidade.Text := IntToStr(produtoFound.quantidade);
+     img.Picture.LoadFromFile(produtoFound.foto);
+  end;
+
+end.

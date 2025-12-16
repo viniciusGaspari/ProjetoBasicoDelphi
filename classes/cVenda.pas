@@ -3,7 +3,7 @@ unit cVenda;
 interface
 
 uses
-  System.Classes, Vcl.Controls, Vcl.ExtCtrls, Vcl.Dialogs, System.SysUtils, datamodule, Data.DB;
+  System.Classes, Vcl.Controls, Vcl.ExtCtrls, Vcl.Dialogs, System.SysUtils, datamodule, Data.DB, cProduto;
 
 type
   TcVenda = class
@@ -27,7 +27,8 @@ type
 
   public
     constructor Create; overload;
-    function Insert(idProduto: Integer; nomeProduto: string; preco: double; quantidade: integer): double;
+    function Insert(idProduto: Integer; nomeProduto: string;
+  preco: Double; quantidade: Integer; precoTotal: Double; quantidadeProdutoVenda: integer): Double;
     procedure clearTable;
 
     property Id: Integer read getId write setId;
@@ -56,23 +57,62 @@ procedure TcVenda.clearTable;
       end;
   end;
 
-function TcVenda.Insert(idProduto: Integer; nomeProduto: string; preco: double; quantidade: integer): double;
+function TcVenda.Insert(idProduto: Integer; nomeProduto: string;
+  preco: Double; quantidade: Integer; precoTotal: Double; quantidadeProdutoVenda: Integer): Double;
+var
+  ultimoValor: Double;
+  cProduto: TcProduto;
+  produtoEncontrado: TcProduto;
 begin
-  with uDataModule.qryCarrinhoInsert do
-  begin
-    Close;
-    Parameters.ParamByName('id_produto').Value := idProduto;
-    Parameters.ParamByName('quantidade').Value := quantidade;
-    Parameters.ParamByName('nomeProduto').Value := nomeProduto;
-    Parameters.ParamByName('preco').Value := preco;
+  cProduto := TcProduto.Create;
+  produtoEncontrado := cProduto.getEntity(idProduto);
 
-    ExecSQL;
+if (produtoEncontrado.quantidade <= 0)
+   or (quantidadeProdutoVenda > produtoEncontrado.quantidade) then
+begin
+  ShowMessage('Produto Sem Estoque Ou Quantidade Máximo Solicitado Atingido');
+end
+else
+begin
+
+    with uDataModule.qryCarrinhoInsert do
+    begin
+      Close;
+      Parameters.ParamByName('id_produto').Value := idProduto;
+      Parameters.ParamByName('quantidade').Value := quantidade;
+      Parameters.ParamByName('nomeProduto').Value := nomeProduto;
+      Parameters.ParamByName('preco').Value := preco;
+      ExecSQL;
+    end;
+
+
+    with uDataModule.qryCarrinhoVenda do
+    begin
+      Close;
+      SQL.Text := 'SELECT TOP 1 preco_total FROM carrinho_venda ORDER BY data_inclusao DESC';
+      Open;
+
+      if not IsEmpty then
+        ultimoValor := FieldByName('preco_total').AsFloat
+      else
+        ultimoValor := 0;
+
+      if precoTotal = 0 then
+        Result := preco
+      else
+        Result := ultimoValor + precoTotal;
+    end;
+
+
+    produtoEncontrado.quantidade := produtoEncontrado.quantidade - quantidadeProdutoVenda;
+    cProduto.saveEntityToDBAlreadyExists(produtoEncontrado);
+
+
+    uDataModule.qryCarrinhoSelectAll.Close;
+    uDataModule.qryCarrinhoSelectAll.Open;
   end;
+end;
 
-
-  uDataModule.qryCarrinhoSelectAll.Close;
-  uDataModule.qryCarrinhoSelectAll.Open;
-  end;
 
 
 

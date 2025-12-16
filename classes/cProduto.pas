@@ -126,7 +126,6 @@ procedure TcProduto.saveEntityToDBAlreadyExists(entity: TcProduto);
 begin
   with uDataModule.qryProdutoEdit do
   begin
-    Close;
     Parameters.ParamByName('id').Value := entity.id;
     Parameters.ParamByName('codigo').Value := entity.codigo;
     Parameters.ParamByName('nome_produto').Value := entity.nomeProduto;
@@ -135,7 +134,8 @@ begin
     Parameters.ParamByName('foto_produto').Value := entity.foto;
     ExecSQL;
     ShowMessage('Alterado com sucesso!');
-    uDataModule.qryProduto.Refresh;
+    uDataModule.qryProduto.Close;
+    uDataModule.qryProduto.Open;
   end;
 end;
 
