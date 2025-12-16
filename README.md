@@ -39,5 +39,31 @@ CREATE TABLE produto (
     nome_produto VARCHAR(50) NOT NULL,
     preco DECIMAL(10,2) NOT NULL,
     quantidade INT NOT NULL,
-    foto_produto VARBINARY(MAX)
+    foto_produto VARCHAR(100)
+);
+
+CREATE TABLE carrinho_venda (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    id_produto INT,
+    nome_produto varchar(300),
+    quantidade INT DEFAULT 1,
+    preco_unitario DECIMAL(10,2),
+    data_inclusao DATETIME NOT NULL DEFAULT GETDATE(),
+    preco_total AS (quantidade * preco_unitario), 
+    CONSTRAINT FK_carrinho_produto FOREIGN KEY (id_produto) REFERENCES produto(id)
+);
+
+CREATE TRIGGER trg_carrinho_venda_preco
+ON carrinho_venda
+AFTER INSERT
+AS
+BEGIN
+    UPDATE cv
+    SET cv.preco_unitario = p.preco
+    FROM carrinho_venda cv
+    INNER JOIN inserted i ON cv.id = i.id
+    INNER JOIN produto p ON cv.id_produto = p.id;
+END;
+GO
+
 );
