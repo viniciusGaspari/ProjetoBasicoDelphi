@@ -1,0 +1,34 @@
+unit cCliente;
+
+interface
+
+uses
+  System.Classes, Vcl.Controls, Vcl.ExtCtrls, Vcl.Dialogs, System.SysUtils, datamodule, Data.DB;
+
+type
+  TcCliente = Class
+    private
+    FId: integer;
+    FCpf: string;
+    FNome: string;
+    procedure getEntityById(id: integer);
+
+    public
+
+    property id: integer read FId write FId;
+    property cpf: string read FCpf write FCpf;
+    property nome: string read FNome write FNome;
+
+  End;
+
+implementation
+
+procedure TcCliente.getEntityById(id: integer);
+  begin
+    with uDataModule do
+      begin
+
+      end;
+  end;
+
+end.

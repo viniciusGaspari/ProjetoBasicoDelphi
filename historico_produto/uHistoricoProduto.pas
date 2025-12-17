@@ -92,6 +92,7 @@ begin
     StrToIntDef(edtQuantidade.Text, 0),
     openPictureDialog.FileName
   );
+  ShowMessage(openPictureDialog.FileName);
 
   ShowMessage('Produto cadastrado com sucesso!');
   uDataModule.qryProduto.Close;

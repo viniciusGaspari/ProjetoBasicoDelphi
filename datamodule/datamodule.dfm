@@ -3,11 +3,12 @@
   Height = 846
   Width = 1126
   object adoConnection: TADOConnection
+    Connected = True
     ConnectionString = 
-      'Provider=SQLOLEDB;Data Source=192.168.15.6;Initial Catalog=venda' +
-      's;User ID=sa;Password=123;'
+      'Provider=SQLOLEDB;Data Source=192.168.15.13;Initial Catalog=vend' +
+      'as;User ID=sa;Password=123;'
     LoginPrompt = False
-    Provider = 'SQLOLEDB'
+    Provider = 'SQLOLEDB.1'
     Left = 32
     Top = 8
   end
@@ -397,8 +398,8 @@
         'INSERT INTO carrinho_venda (id_produto, quantidade, nome_produto' +
         ', preco)'
       'VALUES (:id_produto, :quantidade, :nomeProduto, :preco)')
-    Left = 224
-    Top = 208
+    Left = 368
+    Top = 200
     object AutoIncField4: TAutoIncField
       FieldName = 'id'
       ReadOnly = True
@@ -432,55 +433,10 @@
       Size = 2
     end
   end
-  object clearCarrinhoVendaTable: TADOQuery
-    AutoCalcFields = False
-    AutoIncFieldsMode = afNone
-    Connection = adoConnection
-    CursorType = ctStatic
-    Parameters = <>
-    SQL.Strings = (
-      'DELETE  FROM carrinho_venda'
-      '')
-    Left = 328
-    Top = 208
-    object StringField8: TStringField
-      DisplayLabel = 'Nome do Produto'
-      DisplayWidth = 300
-      FieldName = 'nome_produto'
-      Size = 300
-    end
-    object IntegerField11: TIntegerField
-      DisplayLabel = 'Quantidade'
-      DisplayWidth = 37
-      FieldName = 'quantidade'
-    end
-    object BCDField6: TBCDField
-      DisplayLabel = 'Pre'#231'o'
-      FieldName = 'preco'
-      Precision = 10
-      Size = 2
-    end
-    object IntegerField12: TIntegerField
-      FieldName = 'id'
-      ReadOnly = True
-    end
-    object IntegerField13: TIntegerField
-      FieldName = 'id_produto'
-    end
-    object DateTimeField2: TDateTimeField
-      FieldName = 'data_inclusao'
-    end
-    object FMTBCDField2: TFMTBCDField
-      FieldName = 'preco_total'
-      ReadOnly = True
-      Precision = 21
-      Size = 2
-    end
-  end
   object dsCarrinhoVenda: TDataSource
     DataSet = qryCarrinhoSelectAll
-    Left = 24
-    Top = 296
+    Left = 32
+    Top = 200
   end
   object qryCarrinhoSelectAll: TADOQuery
     Connection = adoConnection
@@ -488,8 +444,8 @@
     Parameters = <>
     SQL.Strings = (
       'SELECT * FROM carrinho_venda ORDER BY data_inclusao DESC;')
-    Left = 112
-    Top = 336
+    Left = 256
+    Top = 200
     object qryCarrinhoSelectAllnome_produto: TStringField
       DisplayLabel = 'Nome do Produto'
       FieldName = 'nome_produto'
@@ -528,7 +484,237 @@
     CursorType = ctStatic
     DataSource = dsCarrinhoVenda
     Parameters = <>
-    Left = 328
-    Top = 352
+    Left = 144
+    Top = 200
+  end
+  object dsVendaEfetuada: TDataSource
+    DataSet = qryVendaEfetuadaSelectAll
+    Left = 40
+    Top = 272
+  end
+  object qryVendaEfetuadaSelectAll: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    DataSource = dsCarrinhoVenda
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM venda_efetuada')
+    Left = 416
+    Top = 272
+    object qryVendaEfetuadaSelectAllid: TAutoIncField
+      FieldName = 'id'
+      ReadOnly = True
+    end
+    object qryVendaEfetuadaSelectAllid_produto: TIntegerField
+      FieldName = 'id_produto'
+    end
+    object qryVendaEfetuadaSelectAllquantidade: TIntegerField
+      FieldName = 'quantidade'
+    end
+    object qryVendaEfetuadaSelectAllpreco_produto: TBCDField
+      FieldName = 'preco_produto'
+      Precision = 10
+      Size = 2
+    end
+    object qryVendaEfetuadaSelectAllpreco_total: TBCDField
+      FieldName = 'preco_total'
+      Precision = 10
+      Size = 2
+    end
+    object qryVendaEfetuadaSelectAllid_cliente: TIntegerField
+      FieldName = 'id_cliente'
+    end
+  end
+  object qryVendaEfetuada: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    DataSource = dsCarrinhoVenda
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM venda_efetuada')
+    Left = 144
+    Top = 272
+    object AutoIncField6: TAutoIncField
+      FieldName = 'id'
+      ReadOnly = True
+    end
+    object IntegerField11: TIntegerField
+      FieldName = 'id_produto'
+    end
+    object IntegerField12: TIntegerField
+      FieldName = 'quantidade'
+    end
+    object BCDField6: TBCDField
+      FieldName = 'preco_produto'
+      Precision = 10
+      Size = 2
+    end
+    object BCDField7: TBCDField
+      FieldName = 'preco_total'
+      Precision = 10
+      Size = 2
+    end
+    object IntegerField13: TIntegerField
+      FieldName = 'id_cliente'
+    end
+  end
+  object qryVendaEfetuadaInsert: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    DataSource = dsCarrinhoVenda
+    Parameters = <
+      item
+        Name = 'idProduto'
+        Attributes = [paSigned, paNullable]
+        DataType = ftInteger
+        Precision = 10
+        Size = 4
+        Value = Null
+      end
+      item
+        Name = 'quantidade'
+        Attributes = [paSigned, paNullable]
+        DataType = ftInteger
+        Precision = 10
+        Size = 4
+        Value = Null
+      end
+      item
+        Name = 'valorTotalCompra'
+        Attributes = [paSigned, paNullable]
+        DataType = ftBCD
+        NumericScale = 2
+        Precision = 10
+        Size = 19
+        Value = Null
+      end
+      item
+        Name = 'cpfCliente'
+        Attributes = [paNullable]
+        DataType = ftString
+        NumericScale = 255
+        Precision = 255
+        Size = 11
+        Value = Null
+      end>
+    SQL.Strings = (
+      'INSERT INTO venda_efetuada'
+      '(id_produto, quantidade, valor_total_compra, cpf_cliente)'
+      'VALUES'
+      '(:idProduto, :quantidade, :valorTotalCompra, :cpfCliente)')
+    Left = 272
+    Top = 272
+  end
+  object dsCliente: TDataSource
+    DataSet = qryVendaEfetuadaSelectAll
+    Left = 16
+    Top = 344
+  end
+  object qryClienteGetByCpf: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    DataSource = dsCarrinhoVenda
+    Parameters = <
+      item
+        Name = 'cpf'
+        Attributes = [paNullable]
+        DataType = ftString
+        NumericScale = 255
+        Precision = 255
+        Size = 11
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT * FROM cliente WHERE cpf = :cpf')
+    Left = 184
+    Top = 344
+    object qryClienteGetByCpfid: TAutoIncField
+      FieldName = 'id'
+      ReadOnly = True
+    end
+    object qryClienteGetByCpfcpf: TStringField
+      FieldName = 'cpf'
+      FixedChar = True
+      Size = 11
+    end
+    object qryClienteGetByCpfnome: TStringField
+      FieldName = 'nome'
+      Size = 100
+    end
+  end
+  object qryClienteSelectAll: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    DataSource = dsCarrinhoVenda
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM cliente')
+    Left = 296
+    Top = 344
+    object qryClienteSelectAllid: TAutoIncField
+      FieldName = 'id'
+      ReadOnly = True
+    end
+    object qryClienteSelectAllcpf: TStringField
+      FieldName = 'cpf'
+      FixedChar = True
+      Size = 11
+    end
+    object qryClienteSelectAllnome: TStringField
+      FieldName = 'nome'
+      Size = 100
+    end
+  end
+  object qryCliente: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    DataSource = dsCarrinhoVenda
+    Parameters = <>
+    SQL.Strings = (
+      '')
+    Left = 88
+    Top = 344
+  end
+  object clearCarrinhoVendaTable: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    Parameters = <>
+    Prepared = True
+    SQL.Strings = (
+      'DELETE FROM carrinho_venda')
+    Left = 464
+    Top = 200
+    object AutoIncField11: TAutoIncField
+      FieldName = 'id'
+      ReadOnly = True
+    end
+    object IntegerField26: TIntegerField
+      FieldName = 'id_produto'
+    end
+    object StringField8: TStringField
+      DisplayLabel = 'Nome do Produto'
+      FieldName = 'nome_produto'
+      Size = 30
+    end
+    object IntegerField27: TIntegerField
+      DisplayLabel = 'Quantidade'
+      FieldName = 'quantidade'
+    end
+    object BCDField16: TBCDField
+      DisplayLabel = 'Pre'#231'o do Produto'
+      FieldName = 'preco_unitario'
+      Precision = 10
+      Size = 2
+    end
+    object DateTimeField2: TDateTimeField
+      DisplayLabel = 'Data da Compra'
+      FieldName = 'data_inclusao'
+    end
+    object FMTBCDField2: TFMTBCDField
+      FieldName = 'preco_total'
+      ReadOnly = True
+      Precision = 21
+      Size = 2
+    end
   end
 end

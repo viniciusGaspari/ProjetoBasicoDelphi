@@ -24,6 +24,7 @@ object fPrincipal: TfPrincipal
     Height = 702
     Align = alClient
     TabOrder = 0
+    ExplicitLeft = 334
     object Label2: TLabel
       Left = 113
       Top = 296
@@ -273,17 +274,18 @@ object fPrincipal: TfPrincipal
       Left = 113
       Top = 184
       Width = 344
-      Height = 58
+      Height = 40
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = 50
+      Font.Height = 33
       Font.Name = 'Segoe UI'
       Font.Pitch = fpFixed
       Font.Style = []
       Font.Quality = fqClearTypeNatural
       ParentFont = False
       TabOrder = 0
-      Text = '0000000000000000000000'
+      Text = ''
+      TextHint = 'Digite C'#243'digo Do Produto'
       OnChange = mskCodigoChange
     end
     object mskNomeProduto: TMaskEdit
@@ -303,14 +305,14 @@ object fPrincipal: TfPrincipal
       TabOrder = 2
       Text = ''
     end
-    object BitBtn1: TBitBtn
+    object bbtnAdicionarProdutoNaLista: TBitBtn
       Left = 113
       Top = 552
-      Width = 317
+      Width = 150
       Height = 49
       Caption = 'Adicionar Produto Na Lista'
       TabOrder = 3
-      OnClick = BitBtn1Click
+      OnClick = bbtnAdicionarProdutoNaListaClick
     end
     object mskPreco: TMaskEdit
       Left = 113
@@ -351,6 +353,23 @@ object fPrincipal: TfPrincipal
       Font.Style = []
       ParentFont = False
       TabOrder = 6
+      Text = ''
+    end
+    object bbtnFinalizarCompra: TBitBtn
+      Left = 287
+      Top = 552
+      Width = 150
+      Height = 49
+      Caption = 'Finalizar Compra'
+      TabOrder = 7
+      OnClick = bbtnFinalizarCompraClick
+    end
+    object mskCpfCliente: TMaskEdit
+      Left = 113
+      Top = 253
+      Width = 317
+      Height = 23
+      TabOrder = 8
       Text = ''
     end
   end

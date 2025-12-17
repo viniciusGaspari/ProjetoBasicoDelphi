@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, uHistoricoProduto, Data.DB,
   Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtDlgs, cProduto, datamodule,
-  Vcl.Buttons, cVenda, Vcl.Imaging.jpeg;
+  Vcl.Buttons, cVenda, Vcl.Imaging.jpeg, cVendaEfetuada;
 
 type
   TfPrincipal = class(TForm)
@@ -22,7 +22,7 @@ type
     Label2: TLabel;
     Label4: TLabel;
     mskQuantidade: TMaskEdit;
-    BitBtn1: TBitBtn;
+    bbtnAdicionarProdutoNaLista: TBitBtn;
     Label5: TLabel;
     img: TImage;
     dbGridPrincipal: TDBGrid;
@@ -32,11 +32,14 @@ type
     Label1: TLabel;
     Venda1: TMenuItem;
     VendasCadastrados1: TMenuItem;
+    bbtnFinalizarCompra: TBitBtn;
+    mskCpfCliente: TMaskEdit;
     procedure ConsultarProdutos2Click(Sender: TObject);
     procedure mskCodigoChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure BitBtn1Click(Sender: TObject);
+    procedure bbtnAdicionarProdutoNaListaClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure bbtnFinalizarCompraClick(Sender: TObject);
   private
     { Private declarations }
     cProduto: TcProduto;
@@ -52,7 +55,7 @@ implementation
 
 {$R *.dfm}
 
-procedure TfPrincipal.BitBtn1Click(Sender: TObject);
+procedure TfPrincipal.bbtnAdicionarProdutoNaListaClick(Sender: TObject);
 var
   preco: string;  precoTotal: Double; texto: string;
 begin
@@ -73,6 +76,27 @@ begin
     )
   );
 end;
+
+procedure TfPrincipal.bbtnFinalizarCompraClick(Sender: TObject);
+var
+  cVendaEfetuada: TcVendaEfetuada;
+  cProduto: TcProduto;
+  precoTexto: string;
+  begin
+    cVendaEfetuada := TcVendaEfetuada.Create;
+    cProduto := TcProduto.Create;
+    cProduto := TcProduto.getEntityByCodigo(StrToInt(mskCodigo.Text));
+    try
+      precoTexto := mskPrecoTotal.Text;
+      Delete(precoTexto, 1, 3);
+      cVendaEfetuada.Insert
+      (cProduto.id, StrToInt(mskQuantidade.Text), StrToFloat(precoTexto), mskCpfCliente.Text);
+    finally
+      cVendaEfetuada.Free;
+      cProduto.Free;
+    end;
+
+  end;
 
 procedure TfPrincipal.ConsultarProdutos2Click(Sender: TObject);
 begin
@@ -106,7 +130,7 @@ procedure TfPrincipal.mskCodigoChange(Sender: TObject);
      produtoFound := cProduto.getEntityByCodigo(StrToInt(mskCodigo.Text));
      mskNomeProduto.Text := produtoFound.nomeProduto;
      mskPreco.Text := 'R$ ' + FloatToStr(produtoFound.preco);
-     mskQuantidade.Text := IntToStr(produtoFound.quantidade);
+     mskQuantidade.Text := IntToStr(0);
      img.Picture.LoadFromFile(produtoFound.foto);
   end;
 

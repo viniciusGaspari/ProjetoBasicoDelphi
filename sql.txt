@@ -30,22 +30,15 @@ BEGIN
 END;
 GO
 
-CREATE TRIGGER trg_carrinho_venda_preco
-ON carrinho_venda
-AFTER INSERT
-AS
-BEGIN
-    UPDATE cv
-    SET cv.preco_unitario = p.preco
-    FROM carrinho_venda cv
-    INNER JOIN inserted i ON cv.id = i.id
-    INNER JOIN produto p ON cv.id_produto = p.id;
-END;
-
-CREATE TABLE venda (
+CREATE TABLE venda_efetuada (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    data_venda DATETIME NOT NULL DEFAULT GETDATE(),
-    valor_total DECIMAL(10,2) NOT NULL
+    id_produto INT ,
+    quantidade INT ,
+    valor_total_compra DECIMAL(10,2) ,
+    cpf_cliente CHAR(11) ,
+    data_inclusao DATETIME DEFAULT GETDATE(),
+     CONSTRAINT fk_id_produto FOREIGN KEY (id_produto) REFERENCES produto(id),
+     CONSTRAINT fk_cpf_cliente FOREIGN KEY (cpf_cliente) REFERENCES cliente(cpf)
 );
 
 
