@@ -23,7 +23,6 @@ object fPrincipal: TfPrincipal
     Height = 702
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 334
     object Label2: TLabel
       Left = 113
       Top = 327
@@ -440,9 +439,10 @@ object fPrincipal: TfPrincipal
       Width = 327
       Height = 38
       DataSource = uDataModule.dsCarrinhoVenda
-      VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbDelete]
+      VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbDelete, nbEdit]
       Align = alBottom
       TabOrder = 2
+      OnClick = DBNavigator1Click
       ExplicitLeft = -4
       ExplicitTop = 664
     end

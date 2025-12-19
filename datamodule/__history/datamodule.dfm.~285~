@@ -612,7 +612,7 @@
   object qryClienteGetByCpf: TADOQuery
     Connection = adoConnection
     CursorType = ctStatic
-    DataSource = dsCliente
+    DataSource = dsCarrinhoVenda
     Parameters = <
       item
         Name = 'cpf'

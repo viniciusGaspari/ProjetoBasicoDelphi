@@ -98,7 +98,7 @@ begin
         ultimoValor := 0;
 
       if precoTotal = 0 then
-        Result := preco * quantidade
+        Result := preco * FieldByName('quantidade').AsInteger
 
       else
         Result := ultimoValor + precoTotal;

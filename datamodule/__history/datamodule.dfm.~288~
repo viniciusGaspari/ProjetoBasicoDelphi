@@ -606,6 +606,7 @@
   end
   object dsCliente: TDataSource
     DataSet = qryVendaEfetuadaSelectAll
+    OnDataChange = dsClienteDataChange
     Left = 16
     Top = 344
   end

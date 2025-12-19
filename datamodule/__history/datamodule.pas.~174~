@@ -102,7 +102,7 @@ type
     qryClienteSelectAllcpf: TStringField;
     qryClienteSelectAllnome: TStringField;
     procedure DataModuleCreate(Sender: TObject);
-
+    procedure dsClienteDataChange(Sender: TObject; Field: TField);
   private
     function GetConnectionString: String;
 
@@ -112,7 +112,7 @@ type
     { Public declarations }
 
   end;
-  TOnCarrinhoChange = procedure(IsEmpty: Boolean) of object;
+
 var
   uDataModule: TuDataModule;
 
@@ -130,6 +130,15 @@ begin
   dsCarrinhoVenda.Enabled := true;
   qryCarrinhoSelectAll.Active := true;
   qryCarrinhoSelectAll.Open;
+end;
+
+procedure TuDataModule.dsClienteDataChange(Sender: TObject; Field: TField);
+begin
+
+  if dsCarrinhoVenda.DataSet.IsEmpty then
+    TfPrincipal(Owner).bbtnFinalizarCompra.Enabled := False
+  else
+    TfPrincipal(Owner).bbtnFinalizarCompra.Enabled := True;
 end;
 
 function TuDataModule.GetConnectionString:String;

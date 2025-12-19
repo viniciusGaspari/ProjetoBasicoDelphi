@@ -14,7 +14,7 @@ type
 
 
     public
-     class function CheckExistenceByCPF(const cpf: string): Boolean;
+     procedure CheckExistenceByCPF(cpf: string);
 
     property id: integer read FId write FId;
     property cpf: string read FCpf write FCpf;
@@ -24,17 +24,16 @@ type
 
 implementation
 
-class function TcCliente.CheckExistenceByCPF(const cpf: string): Boolean;
-begin
-  with uDataModule.qryClienteGetByCpf do
+procedure TcCliente.CheckExistenceByCPF(cpf: string);
   begin
-    Close;
-      Parameters.ParamByName('cpf').Value := cpf;
-    Open;
-    Result := not EOF;
+    with uDataModule.qryClienteGetByCpf do
+      begin
+        Close;
+        Parameters.ParamByName('cpf').Value := cpf;
+        Open;
+
+
+      end;
   end;
-end;
-
-
 
 end.

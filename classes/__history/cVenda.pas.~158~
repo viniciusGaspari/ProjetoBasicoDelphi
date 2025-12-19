@@ -98,8 +98,7 @@ begin
         ultimoValor := 0;
 
       if precoTotal = 0 then
-        Result := preco * quantidade
-
+        Result := preco
       else
         Result := ultimoValor + precoTotal;
     end;

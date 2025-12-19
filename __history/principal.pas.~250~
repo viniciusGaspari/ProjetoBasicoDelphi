@@ -42,9 +42,12 @@ type
     procedure bbtnAdicionarProdutoNaListaClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure bbtnFinalizarCompraClick(Sender: TObject);
+    procedure DBNavigator1Click(Sender: TObject; Button: TNavigateBtn);
   private
-    cVenda: TcVenda;
+    { Private declarations }
+    cVenda: TcVenda; // mantém a venda como campo
   public
+    { Public declarations }
   end;
 
 var
@@ -67,14 +70,19 @@ begin
   qtd := StrToIntDef(mskQuantidade.Text, 0);
   cCliente := TcCliente.Create;
 
+  ShowMessage(mskCpfCliente.Text);
+
   if Assigned(produtoFound) and (qtd > 0) and cCliente.CheckExistenceByCPF(mskCpfCliente.Text) then
   begin
     try
+
+
       preco := mskPreco.Text;
-      Delete(preco, 1, 3);
+      Delete(preco, 1, 3); // remove "R$ "
       texto := mskPrecoTotal.Text;
-      Delete(texto, 1, 3);
+      Delete(texto, 1, 3); // remove "R$ "
       precoTotal := StrToFloatDef(texto, 0);
+
       mskPrecoTotal.Text := 'R$ ' + FloatToStr(
         cVenda.Insert(
           produtoFound.id,
@@ -98,13 +106,16 @@ begin
       ShowMessage('Quantidade inválida.')
     else
       ShowMessage('Cliente não encontrado.');
+
     mskQuantidade.Clear;
+
     if FileExists('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg') then
       img.Picture.LoadFromFile('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg')
     else
       img.Picture.Assign(nil);
   end;
 end;
+
 
 procedure TfPrincipal.bbtnFinalizarCompraClick(Sender: TObject);
 var
@@ -122,14 +133,17 @@ begin
       ShowMessage('Produto não encontrado para finalizar a compra.');
       Exit;
     end;
+
     precoTexto := StringReplace(mskPrecoTotal.Text, 'R$ ', '', []);
     total := StrToFloatDef(precoTexto, 0);
     qtd := StrToIntDef(mskQuantidade.Text, 0);
+
     if (qtd <= 0) then
     begin
       ShowMessage('Quantidade inválida para finalizar.');
       Exit;
     end;
+
     try
       cVendaEfetuada.Insert(produtoFound.id, qtd, total, mskCpfCliente.Text);
       ShowMessage('Compra finalizada com sucesso.');
@@ -143,12 +157,26 @@ begin
   end;
 end;
 
+
 procedure TfPrincipal.ConsultarProdutos2Click(Sender: TObject);
 begin
   fHistoricoProduto.ShowModal;
   cVenda.clearTable;
   mskPrecoTotal.Text := '';
 end;
+
+procedure TfPrincipal.DBNavigator1Click(Sender: TObject; Button: TNavigateBtn);
+begin
+  if Button = nbDelete then
+    begin
+      if MessageDlg('Deseja realmente excluir este registro?',
+      mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+        dbGridPrincipal.DataSource.DataSet.Delete
+    else
+      abort;
+
+    end;
+  end;
 
 procedure TfPrincipal.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
@@ -165,24 +193,28 @@ begin
   uDataModule.qryCarrinhoSelectAll.Open;
   mskPrecoTotal.Text := '';
   bbtnAdicionarProdutoNaLista.Enabled := False;
-end;
+  end;
 
 procedure TfPrincipal.mskCodigoChange(Sender: TObject);
 var
   produtoFound: TcProduto;
 begin
   produtoFound := TcProduto.getEntityByCodigo(StrToIntDef(mskCodigo.Text, 0));
+
   if Assigned(produtoFound) then
   begin
     try
       bbtnAdicionarProdutoNaLista.Enabled := True;
+
       mskNomeProduto.Text := produtoFound.nomeProduto;
       mskPreco.Text := 'R$ ' + FloatToStr(produtoFound.preco);
       mskQuantidade.TextHint := 'Quantidade de estoque do produto: ' + IntToStr(produtoFound.quantidade);
+
       if (produtoFound.foto <> '') and FileExists(produtoFound.foto) then
         img.Picture.LoadFromFile(produtoFound.foto)
       else
       begin
+        // Não interrompe fluxo com popup; apenas coloca imagem padrão
         if FileExists('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg') then
           img.Picture.LoadFromFile('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg')
         else
@@ -198,10 +230,12 @@ begin
     mskNomeProduto.Clear;
     mskPreco.Clear;
     mskQuantidade.Clear;
+
     if FileExists('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg') then
       img.Picture.LoadFromFile('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg')
     else
       img.Picture.Assign(nil);
+
     ShowMessage('Produto não encontrado.');
   end;
 end;

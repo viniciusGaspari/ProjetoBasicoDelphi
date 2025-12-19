@@ -14,7 +14,7 @@ type
 
 
     public
-     class function CheckExistenceByCPF(const cpf: string): Boolean;
+     class function TcCliente.CheckExistenceByCPF(const cpf: string): Boolean;
 
     property id: integer read FId write FId;
     property cpf: string read FCpf write FCpf;
@@ -29,12 +29,12 @@ begin
   with uDataModule.qryClienteGetByCpf do
   begin
     Close;
-      Parameters.ParamByName('cpf').Value := cpf;
+    Parameters.ParamByName('cpf').Value := cpf;
     Open;
-    Result := not EOF;
+
+    Result := not EOF; // True se encontrou registro, False se não
   end;
 end;
-
 
 
 end.

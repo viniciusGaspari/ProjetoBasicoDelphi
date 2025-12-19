@@ -5,7 +5,7 @@
   object adoConnection: TADOConnection
     ConnectionString = 
       'Provider=SQLOLEDB;Data Source=192.168.15.6;Initial Catalog=venda' +
-      's;User ID=sa;Password=123;'
+      's;User ID=sa;'
     LoginPrompt = False
     Provider = 'SQLOLEDB'
     Left = 32
@@ -612,7 +612,7 @@
   object qryClienteGetByCpf: TADOQuery
     Connection = adoConnection
     CursorType = ctStatic
-    DataSource = dsCliente
+    DataSource = dsCarrinhoVenda
     Parameters = <
       item
         Name = 'cpf'

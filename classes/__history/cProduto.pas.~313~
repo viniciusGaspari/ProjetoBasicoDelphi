@@ -77,23 +77,16 @@ begin
     Close;
     Parameters.ParamByName('codigo').Value := codigo;
     Open;
-
-    if not EOF then
-    begin
-      Result := TcProduto.Create(
-        FieldByName('id').AsInteger,
-        FieldByName('codigo').AsInteger,
-        FieldByName('nome_produto').AsString,
-        FieldByName('preco').AsFloat,
-        FieldByName('quantidade').AsInteger,
-        FieldByName('foto_produto').AsString
-      );
-    end
-    else
-      Result := nil; // produto não encontrado
+    Result := TcProduto.Create(
+      FieldByName('id').AsInteger,
+      FieldByName('codigo').AsInteger,
+      FieldByName('nome_produto').AsString,
+      FieldByName('preco').AsFloat,
+      FieldByName('quantidade').AsInteger,
+      FieldByName('foto_produto').AsString
+    );
   end;
 end;
-
 
 class function TcProduto.getEntity(id: Integer): TcProduto;
 begin

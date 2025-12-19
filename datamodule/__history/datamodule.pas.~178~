@@ -102,6 +102,7 @@ type
     qryClienteSelectAllcpf: TStringField;
     qryClienteSelectAllnome: TStringField;
     procedure DataModuleCreate(Sender: TObject);
+    procedure dsClienteDataChange(Sender: TObject; Field: TField);
 
   private
     function GetConnectionString: String;
@@ -112,7 +113,7 @@ type
     { Public declarations }
 
   end;
-  TOnCarrinhoChange = procedure(IsEmpty: Boolean) of object;
+
 var
   uDataModule: TuDataModule;
 
@@ -131,6 +132,7 @@ begin
   qryCarrinhoSelectAll.Active := true;
   qryCarrinhoSelectAll.Open;
 end;
+
 
 function TuDataModule.GetConnectionString:String;
   begin

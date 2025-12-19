@@ -29,8 +29,9 @@ begin
   with uDataModule.qryClienteGetByCpf do
   begin
     Close;
-      Parameters.ParamByName('cpf').Value := cpf;
+      Parameters.ParamByName('cpf').Value := Trim(cpf);
     Open;
+    ShowMessage(FieldByName('nome').AsString);
     Result := not EOF;
   end;
 end;

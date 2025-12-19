@@ -112,7 +112,7 @@ type
     { Public declarations }
 
   end;
-  TOnCarrinhoChange = procedure(IsEmpty: Boolean) of object;
+
 var
   uDataModule: TuDataModule;
 
@@ -131,6 +131,8 @@ begin
   qryCarrinhoSelectAll.Active := true;
   qryCarrinhoSelectAll.Open;
 end;
+
+
 
 function TuDataModule.GetConnectionString:String;
   begin

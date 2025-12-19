@@ -29,9 +29,10 @@ begin
   with uDataModule.qryClienteGetByCpf do
   begin
     Close;
-      Parameters.ParamByName('cpf').Value := cpf;
+    Parameters.ParamByName('cpf').Value := Trim(cpf); // remove espaços
     Open;
-    Result := not EOF;
+
+    Result := EOF;
   end;
 end;
 
