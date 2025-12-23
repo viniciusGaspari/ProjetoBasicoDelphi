@@ -5,8 +5,8 @@
   object adoConnection: TADOConnection
     Connected = True
     ConnectionString = 
-      'Provider=SQLOLEDB;Data Source=192.168.15.10;Initial Catalog=vend' +
-      'as;User ID=sa;Password=123;'
+      'Provider=SQLOLEDB;Data Source=192.168.15.6;Initial Catalog=venda' +
+      's;User ID=sa;Password=123;'
     LoginPrompt = False
     Provider = 'SQLOLEDB.1'
     Left = 32
@@ -493,6 +493,7 @@
     Top = 272
   end
   object qryVendaEfetuadaSelectAll: TADOQuery
+    Active = True
     Connection = adoConnection
     CursorType = ctStatic
     DataSource = dsCarrinhoVenda
@@ -502,27 +503,33 @@
     Left = 416
     Top = 272
     object qryVendaEfetuadaSelectAllid: TAutoIncField
+      DisplayLabel = 'ID'
       FieldName = 'id'
       ReadOnly = True
     end
     object qryVendaEfetuadaSelectAllid_produto: TIntegerField
+      DisplayLabel = 'C'#243'digo do Produto'
       FieldName = 'id_produto'
     end
     object qryVendaEfetuadaSelectAllquantidade: TIntegerField
+      DisplayLabel = 'Quantidade'
       FieldName = 'quantidade'
     end
-    object qryVendaEfetuadaSelectAllpreco_produto: TBCDField
-      FieldName = 'preco_produto'
+    object qryVendaEfetuadaSelectAllvalor_total_compra: TBCDField
+      DisplayLabel = 'Valor Total da Compra'
+      FieldName = 'valor_total_compra'
       Precision = 10
       Size = 2
     end
-    object qryVendaEfetuadaSelectAllpreco_total: TBCDField
-      FieldName = 'preco_total'
-      Precision = 10
-      Size = 2
+    object qryVendaEfetuadaSelectAllcpf_cliente: TStringField
+      DisplayLabel = 'CPF do Cliente'
+      FieldName = 'cpf_cliente'
+      FixedChar = True
+      Size = 11
     end
-    object qryVendaEfetuadaSelectAllid_cliente: TIntegerField
-      FieldName = 'id_cliente'
+    object qryVendaEfetuadaSelectAlldata_inclusao: TDateTimeField
+      DisplayLabel = 'Data de Inclus'#227'o'
+      FieldName = 'data_inclusao'
     end
   end
   object qryVendaEfetuada: TADOQuery

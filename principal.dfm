@@ -458,6 +458,7 @@ object fPrincipal: TfPrincipal
       Caption = 'Venda'
       object VendasCadastrados1: TMenuItem
         Caption = 'Vendas Cadastrados'
+        OnClick = VendasCadastrados1Click
       end
     end
   end

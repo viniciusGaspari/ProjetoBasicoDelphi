@@ -10,7 +10,8 @@ uses
   cProduto in 'classes\cProduto.pas',
   cVenda in 'classes\cVenda.pas',
   cVendaEfetuada in 'classes\cVendaEfetuada.pas',
-  cCliente in 'classes\cCliente.pas';
+  cCliente in 'classes\cCliente.pas',
+  uHistoricoVendas in 'historico_vendas\uHistoricoVendas.pas' {fHistoricoVenda};
 
 {$R *.res}
 
@@ -21,6 +22,7 @@ begin
   Application.CreateForm(TfPrincipal, fPrincipal);
   Application.CreateForm(TfHeranca, fHeranca);
   Application.CreateForm(TfHistoricoProduto, fHistoricoProduto);
+  Application.CreateForm(TfHistoricoVenda, fHistoricoVenda);
   Application.Run;
 end.
 

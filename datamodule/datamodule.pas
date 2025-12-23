@@ -69,12 +69,6 @@ type
     qryCarrinhoVenda: TADOQuery;
     dsVendaEfetuada: TDataSource;
     qryVendaEfetuadaSelectAll: TADOQuery;
-    qryVendaEfetuadaSelectAllid: TAutoIncField;
-    qryVendaEfetuadaSelectAllid_produto: TIntegerField;
-    qryVendaEfetuadaSelectAllquantidade: TIntegerField;
-    qryVendaEfetuadaSelectAllpreco_produto: TBCDField;
-    qryVendaEfetuadaSelectAllpreco_total: TBCDField;
-    qryVendaEfetuadaSelectAllid_cliente: TIntegerField;
     qryVendaEfetuada: TADOQuery;
     AutoIncField6: TAutoIncField;
     IntegerField11: TIntegerField;
@@ -102,6 +96,12 @@ type
     qryClienteSelectAllcpf: TStringField;
     qryClienteSelectAllnome: TStringField;
     qryCarrinho: TADOQuery;
+    qryVendaEfetuadaSelectAllid: TAutoIncField;
+    qryVendaEfetuadaSelectAllid_produto: TIntegerField;
+    qryVendaEfetuadaSelectAllquantidade: TIntegerField;
+    qryVendaEfetuadaSelectAllvalor_total_compra: TBCDField;
+    qryVendaEfetuadaSelectAllcpf_cliente: TStringField;
+    qryVendaEfetuadaSelectAlldata_inclusao: TDateTimeField;
     procedure DataModuleCreate(Sender: TObject);
 
   private

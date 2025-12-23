@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, uHistoricoProduto, Data.DB,
   Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtDlgs, cProduto, datamodule,
-  Vcl.Buttons, cVenda, Vcl.Imaging.jpeg, cVendaEfetuada, cCLiente, Vcl.DBCtrls;
+  Vcl.Buttons, cVenda, Vcl.Imaging.jpeg, cVendaEfetuada, cCLiente, Vcl.DBCtrls, uHistoricoVendas;
 
 type
   TfPrincipal = class(TForm)
@@ -42,6 +42,7 @@ type
     procedure bbtnAdicionarProdutoNaListaClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure bbtnFinalizarCompraClick(Sender: TObject);
+    procedure VendasCadastrados1Click(Sender: TObject);
   private
     cVenda: TcVenda;
     idProduto: integer;
@@ -201,6 +202,11 @@ begin
       img.Picture.Assign(nil);
     ShowMessage('Produto não encontrado.');
   end;
+end;
+
+procedure TfPrincipal.VendasCadastrados1Click(Sender: TObject);
+begin
+  fHistoricoVenda.ShowModal;
 end;
 
 end.
