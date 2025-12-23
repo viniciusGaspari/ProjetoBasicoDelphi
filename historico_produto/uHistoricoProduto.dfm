@@ -236,6 +236,7 @@ inherited fHistoricoProduto: TfHistoricoProduto
       Width = 118
       Height = 37
       Caption = 'CANCELAR'
+      Enabled = False
       Glyph.Data = {
         36030000424D3603000000000000360000002800000010000000100000000100
         18000000000000030000120B0000120B00000000000000000000FF00FFFF00FF
@@ -268,6 +269,17 @@ inherited fHistoricoProduto: TfHistoricoProduto
     end
   end
   object openPictureDialog: TOpenPictureDialog
+    Filter = 
+      'All (*.gif;*.wbmp;*.webp;*.svg;*.gif;*.jpg;*.jpeg;*.png;*.bmp;*.' +
+      'ico;*.emf;*.wmf;*.tif;*.tiff)|*.png;*.gif;*.wbmp;*.webp;*.svg;*.' +
+      'gif;*.jpg;*.jpeg;*.png;*.bmp;*.ico;*.emf;*.wmf;*.tif;*.tiff|Comp' +
+      'uServe GIF Image (*.gif)|*.gif|WBMP Images (*.wbmp)|*.wbmp|WebP ' +
+      'Images (*.webp)|*.webp|Scalable Vector Graphics (*.svg)|*.svg|GI' +
+      'F Image (*.gif)|*.gif|JPEG Image File (*.jpg)|*.jpg|JPEG Image F' +
+      'ile (*.jpeg)|*.jpeg|Portable Network Graphics (*.png)|*.png|Bitm' +
+      'aps (*.bmp)|*.bmp|Icons (*.ico)|*.ico|Enhanced Metafiles (*.emf)' +
+      '|*.emf|Metafiles (*.wmf)|*.wmf|TIFF Images (*.tif)|*.tif|TIFF Im' +
+      'ages (*.tiff)|*.tiff'
     Left = 728
     Top = 64
   end

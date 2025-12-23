@@ -36,6 +36,7 @@ type
     mskCpfCliente: TMaskEdit;
     Label3: TLabel;
     DBNavigator1: TDBNavigator;
+    bbtnCpf: TBitBtn;
     procedure ConsultarProdutos2Click(Sender: TObject);
     procedure mskCodigoChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -43,6 +44,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure bbtnFinalizarCompraClick(Sender: TObject);
     procedure VendasCadastrados1Click(Sender: TObject);
+    procedure bbtnCpfClick(Sender: TObject);
   private
     cVenda: TcVenda;
     idProduto: integer;
@@ -106,6 +108,11 @@ begin
     else
       img.Picture.Assign(nil);
   end;
+end;
+
+procedure TfPrincipal.bbtnCpfClick(Sender: TObject);
+begin
+  mskCpfCliente.Text := '12345678900';
 end;
 
 procedure TfPrincipal.bbtnFinalizarCompraClick(Sender: TObject);

@@ -493,7 +493,6 @@
     Top = 272
   end
   object qryVendaEfetuadaSelectAll: TADOQuery
-    Active = True
     Connection = adoConnection
     CursorType = ctStatic
     DataSource = dsCarrinhoVenda

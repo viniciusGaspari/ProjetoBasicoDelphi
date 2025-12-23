@@ -1,0 +1,213 @@
+unit principal;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, uHistoricoProduto, Data.DB,
+  Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtDlgs, cProduto, datamodule,
+  Vcl.Buttons, cVenda, Vcl.Imaging.jpeg, cVendaEfetuada, cCLiente, Vcl.DBCtrls, uHistoricoVendas;
+
+type
+  TfPrincipal = class(TForm)
+    MainMenu1: TMainMenu;
+    Detalhes1: TMenuItem;
+    ConsultarProdutos2: TMenuItem;
+    Panel6: TPanel;
+    openPictureDialog: TOpenPictureDialog;
+    Panel5: TPanel;
+    Panel1: TPanel;
+    mskCodigo: TMaskEdit;
+    mskNomeProduto: TMaskEdit;
+    Label2: TLabel;
+    Label4: TLabel;
+    mskQuantidade: TMaskEdit;
+    bbtnAdicionarProdutoNaLista: TBitBtn;
+    Label5: TLabel;
+    img: TImage;
+    dbGridPrincipal: TDBGrid;
+    mskPreco: TMaskEdit;
+    Panel4: TPanel;
+    mskPrecoTotal: TMaskEdit;
+    Label1: TLabel;
+    Venda1: TMenuItem;
+    VendasCadastrados1: TMenuItem;
+    bbtnFinalizarCompra: TBitBtn;
+    mskCpfCliente: TMaskEdit;
+    Label3: TLabel;
+    DBNavigator1: TDBNavigator;
+    procedure ConsultarProdutos2Click(Sender: TObject);
+    procedure mskCodigoChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure bbtnAdicionarProdutoNaListaClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure bbtnFinalizarCompraClick(Sender: TObject);
+    procedure VendasCadastrados1Click(Sender: TObject);
+  private
+    cVenda: TcVenda;
+    idProduto: integer;
+  public
+  end;
+
+var
+  fPrincipal: TfPrincipal;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfPrincipal.bbtnAdicionarProdutoNaListaClick(Sender: TObject);
+var
+  produtoFound: TcProduto;
+  preco: string;
+  precoTotal: Double;
+  texto: string;
+  qtd: Integer;
+  cCliente: TcCliente;
+begin
+  produtoFound := TcProduto.getEntityByCodigo(StrToIntDef(mskCodigo.Text, 0));
+  qtd := StrToIntDef(mskQuantidade.Text, 0);
+  cCliente := TcCliente.Create;
+
+  if Assigned(produtoFound) and (qtd > 0) and cCliente.CheckExistenceByCPF(mskCpfCliente.Text) then
+  begin
+    try
+      preco := mskPreco.Text;
+      Delete(preco, 1, 3);
+      texto := mskPrecoTotal.Text;
+      Delete(texto, 1, 3);
+      precoTotal := StrToFloatDef(texto, 0);
+      mskPrecoTotal.Text := 'R$ ' + FloatToStr(
+        cVenda.Insert(
+          produtoFound.id,
+          mskNomeProduto.Text,
+          StrToFloatDef(preco, 0),
+          qtd,
+          precoTotal,
+          qtd
+        )
+      );
+    finally
+      produtoFound.Free;
+      cCliente.Free;
+    end;
+  end
+  else
+  begin
+    if not Assigned(produtoFound) then
+      ShowMessage('Produto não encontrado.')
+    else if qtd <= 0 then
+      ShowMessage('Quantidade inválida.')
+    else
+      ShowMessage('Cliente não encontrado.');
+    mskQuantidade.Clear;
+    if FileExists('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg') then
+      img.Picture.LoadFromFile('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg')
+    else
+      img.Picture.Assign(nil);
+  end;
+end;
+
+procedure TfPrincipal.bbtnFinalizarCompraClick(Sender: TObject);
+var
+  cVendaEfetuada: TcVendaEfetuada;
+  produtoFound: TcProduto;
+  precoTexto: string;
+  qtd: Integer;
+  total: Double;
+begin
+  cVendaEfetuada := TcVendaEfetuada.Create;
+  produtoFound := TcProduto.getEntityByCodigo(StrToIntDef(mskCodigo.Text, 0));
+
+  try
+    if not(Assigned(produtoFound)) then
+        ShowMessage('Produto não registrado')
+      else
+        begin
+          precoTexto := mskPrecoTotal.Text;
+          Delete(precoTexto,1,3);
+          total := StrToFloat(precoTexto);
+          cVendaEfetuada.RegistrarVenda(
+            idProduto,
+            StrToInt(mskQuantidade.Text),
+            total,
+            mskCpfCliente.Text);
+      end;
+  finally
+    cVendaEfetuada.Free;
+    produtoFound.Free;
+  end;
+
+end;
+
+procedure TfPrincipal.ConsultarProdutos2Click(Sender: TObject);
+begin
+  fHistoricoProduto.ShowModal;
+  cVenda.clearTable;
+  mskPrecoTotal.Text := '';
+end;
+
+procedure TfPrincipal.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  cVenda.clearTable;
+  dbGridPrincipal.DataSource := uDataModule.dsCarrinhoVenda;
+end;
+
+procedure TfPrincipal.FormCreate(Sender: TObject);
+begin
+  cVenda := TcVenda.Create;
+  uDataModule.dsCarrinhoVenda.DataSet := uDataModule.qryCarrinhoSelectAll;
+  dbGridPrincipal.DataSource := nil;
+  dbGridPrincipal.DataSource := uDataModule.dsCarrinhoVenda;
+  uDataModule.qryCarrinhoSelectAll.Open;
+  uDataModule.clearCarrinhoVendaTable.ExecSQL;
+  mskPrecoTotal.Text := '';
+end;
+
+procedure TfPrincipal.mskCodigoChange(Sender: TObject);
+var
+  produtoFound: TcProduto;
+begin
+  produtoFound := TcProduto.getEntityByCodigo(StrToIntDef(mskCodigo.Text, 0));
+  if Assigned(produtoFound) then
+  begin
+    try
+      idProduto := produtoFound.id;
+      bbtnAdicionarProdutoNaLista.Enabled := True;
+      mskNomeProduto.Text := produtoFound.nomeProduto;
+      mskPreco.Text := 'R$ ' + FloatToStr(produtoFound.preco);
+      mskQuantidade.TextHint := 'Quantidade de estoque do produto: ' + IntToStr(produtoFound.quantidade);
+      if (produtoFound.foto <> '') and FileExists(produtoFound.foto) then
+        img.Picture.LoadFromFile(produtoFound.foto)
+      else
+      begin
+        if FileExists('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg') then
+          img.Picture.LoadFromFile('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg')
+        else
+          img.Picture.Assign(nil);
+      end;
+    finally
+      produtoFound.Free;
+    end;
+  end
+  else
+  begin
+    bbtnAdicionarProdutoNaLista.Enabled := False;
+    mskNomeProduto.Clear;
+    mskPreco.Clear;
+    mskQuantidade.Clear;
+    if FileExists('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg') then
+      img.Picture.LoadFromFile('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg')
+    else
+      img.Picture.Assign(nil);
+    ShowMessage('Produto não encontrado.');
+  end;
+end;
+
+procedure TfPrincipal.VendasCadastrados1Click(Sender: TObject);
+begin
+  fHistoricoVenda.ShowModal;
+end;
+
+end.
+

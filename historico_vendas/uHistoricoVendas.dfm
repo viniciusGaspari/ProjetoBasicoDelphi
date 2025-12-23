@@ -46,8 +46,7 @@ object fHistoricoVenda: TfHistoricoVenda
         Height = 89
         Align = alTop
         TabOrder = 0
-        ExplicitLeft = -3
-        ExplicitTop = 3
+        ExplicitLeft = 3
         object orderedByLabel: TLabel
           Left = 32
           Top = 20
@@ -70,6 +69,7 @@ object fHistoricoVenda: TfHistoricoVenda
           TabOrder = 0
           Text = ''
           TextHint = 'Digite Sua Busca'
+          OnChange = mskeBuscarChange
         end
         object bbtnClear: TBitBtn
           Left = 224
@@ -121,6 +121,8 @@ object fHistoricoVenda: TfHistoricoVenda
         TitleFont.Height = -12
         TitleFont.Name = 'Segoe UI'
         TitleFont.Style = []
+        OnDblClick = dbGridDblClick
+        OnTitleClick = dbGridTitleClick
         Columns = <
           item
             Expanded = False

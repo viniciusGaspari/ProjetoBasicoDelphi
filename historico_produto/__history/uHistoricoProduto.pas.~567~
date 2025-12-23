@@ -1,0 +1,304 @@
+﻿unit uHistoricoProduto;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, heranca, Data.DB, Vcl.Buttons,
+  Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls, datamodule, Vcl.ComCtrls,
+  Vcl.ExtDlgs, RxToolEdit, RxCurrEdit, cProduto, Data.Win.ADODB, Vcl.ControlList,
+  Vcl.Imaging.jpeg, System.IOUtils;
+
+type
+  TfHistoricoProduto = class(TfHeranca)
+    openPictureDialog: TOpenPictureDialog;
+    bbtnSalvarAlteracao: TBitBtn;
+    bbtnCadastrar: TBitBtn;
+    lblCodigo: TLabel;
+    edtCodigo: TMaskEdit;
+    lbleNomeProduto: TMaskEdit;
+    cePreco: TMaskEdit;
+    edtQuantidade: TMaskEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    bbtnGravarEditar: TBitBtn;
+    bbtnCancelar: TBitBtn;
+    bbtnClear: TBitBtn;
+    img: TImage;
+    procedure imgClick(Sender: TObject);
+    procedure dbGridDblClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure bbtnCadastrarClick(Sender: TObject);
+    procedure bbtnGravarEditarClick(Sender: TObject);
+    procedure bbtnNovoClick(Sender: TObject);
+    procedure bbtnCancelarClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure mskeBuscarChange(Sender: TObject);
+    procedure dbGridTitleClick(Column: TColumn);
+    procedure bbtnClearClick(Sender: TObject);
+    procedure Image1Click(Sender: TObject);
+    procedure bbtnSalvarAlteracaoClick(Sender: TObject);
+  private
+    colunaSelecionada: string;
+    idEntityFound: Integer;
+    cProduto: TcProduto;
+    function GetSelectedID: Integer;
+    procedure changeStatusButtons(flag: Boolean);
+    procedure clearFields;
+    procedure loadBlankImage;
+  public
+  end;
+
+var
+  fHistoricoProduto: TfHistoricoProduto;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfHistoricoProduto.changeStatusButtons(flag: Boolean);
+begin
+  bbtnCadastrar.Visible := not flag;
+  bbtnCadastrar.Enabled := not flag;
+  bbtnSalvarAlteracao.Visible := flag;
+  bbtnSalvarAlteracao.Enabled := flag;
+  pgControl.Pages[0].TabVisible := not flag;
+  pgControl.Pages[1].TabVisible := flag;
+end;
+
+procedure TfHistoricoProduto.clearFields;
+begin
+  edtCodigo.Clear;
+  edtQuantidade.Clear;
+  cePreco.Clear;
+  lbleNomeProduto.Clear;
+  loadBlankImage;
+end;
+
+procedure TfHistoricoProduto.loadBlankImage;
+begin
+  img.Picture.LoadFromFile('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg');
+end;
+
+
+procedure TfHistoricoProduto.bbtnCadastrarClick(Sender: TObject);
+var
+  destino: string;
+begin
+  inherited;
+
+  // Define a pasta padrão onde as fotos ficarão
+  destino := 'C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\' +
+             ExtractFileName(openPictureDialog.FileName);
+
+  // Copia o arquivo selecionado para a pasta padrão
+  if FileExists(openPictureDialog.FileName) then
+    TFile.Copy(openPictureDialog.FileName, destino, True); // True sobrescreve se já existir
+
+  // Agora grava no banco o caminho da nova pasta
+  cProduto.saveEntityToDataBase(
+    StrToIntDef(edtCodigo.Text, 0),
+    lbleNomeProduto.Text,
+    StrToFloatDef(cePreco.Text, 0),
+    StrToIntDef(edtQuantidade.Text, 0),
+    destino // sempre grava o caminho da pasta padrão
+  );
+
+  ShowMessage('Produto cadastrado com sucesso!');
+  uDataModule.qryProduto.Close;
+  uDataModule.qryProduto.Open;
+
+  changeStatusButtons(False);
+end;
+
+procedure TfHistoricoProduto.bbtnSalvarAlteracaoClick(Sender: TObject);
+  var
+    produtoEncontrado: TcProduto;
+    destino: String;
+  begin
+    inherited;
+      changeStatusButtons(False);
+
+    destino := 'C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\' + openPictureDialog.FileName;
+
+    produtoEncontrado := TcProduto.getEntity(GetSelectedID);
+    produtoEncontrado.id := GetSelectedID;
+    produtoEncontrado.codigo := StrToIntDef(edtCodigo.Text, 0);
+    produtoEncontrado.nomeProduto := lbleNomeProduto.Text;
+    produtoEncontrado.preco := StrToFloatDef(cePreco.Text, 0);
+    produtoEncontrado.quantidade := StrToIntDef(edtQuantidade.Text, 0);
+    produtoEncontrado.foto := openPictureDialog.FileName;
+
+    cProduto.saveEntityToDBAlreadyExists(produtoEncontrado);
+  end;
+
+procedure TfHistoricoProduto.bbtnCancelarClick(Sender: TObject);
+begin
+  inherited;
+  clearFields;
+  changeStatusButtons(False);
+  bbtnGravarEditar.Enabled := True;
+  bbtnNovo.Enabled := True;
+end;
+
+procedure TfHistoricoProduto.bbtnClearClick(Sender: TObject);
+begin
+  inherited;
+  mskeBuscar.Text := '';
+end;
+
+procedure TfHistoricoProduto.bbtnGravarEditarClick(Sender: TObject);
+var
+  entityFound: TcProduto;
+  produtoEncontrado: TcProduto;
+begin
+  idEntityFound := GetSelectedID;
+  entityFound := TcProduto.getEntity(idEntityFound);
+  bbtnNovo.Enabled := false;
+  changeStatusButtons(True);
+  pgControl.Pages[1].Caption := 'Editando Conteúdo';
+  edtCodigo.Text := IntToStr(entityFound.codigo);
+  lbleNomeProduto.Text := entityFound.nomeProduto;
+  cePreco.Text := FloatToStr(entityFound.preco);
+  edtQuantidade.Text := IntToStr(entityFound.quantidade);
+
+    if  FileExists(entityFound.foto) then
+      img.Picture.LoadFromFile(entityFound.foto)
+    else
+      loadBlankImage;
+
+end;
+
+
+
+procedure TfHistoricoProduto.bbtnNovoClick(Sender: TObject);
+begin
+  inherited;
+  changeStatusButtons(True);
+  bbtnCadastrar.Visible := True;
+  bbtnCadastrar.Enabled := True;
+  bbtnSalvarAlteracao.Visible := True;
+  bbtnGravarEditar.Enabled := False;
+  edtCodigo.Text := '';
+  cePreco.Text := '';
+  lbleNomeProduto.Text := '';
+  edtQuantidade.Text := '';
+  loadBlankImage;
+  pgControl.Pages[1].Caption := 'Cadastrando novo conteúdo';
+end;
+
+
+
+function TfHistoricoProduto.GetSelectedID: Integer;
+begin
+  Result := dbGrid.DataSource.DataSet.FieldByName('id').AsInteger;
+end;
+
+procedure TfHistoricoProduto.Image1Click(Sender: TObject);
+begin
+  inherited;
+  if openPictureDialog.Execute then
+    img.Picture.LoadFromFile(openPictureDialog.fileName);
+end;
+
+procedure TfHistoricoProduto.dbGridDblClick(Sender: TObject);
+begin
+  inherited;
+  if MessageDlg('Deseja realmente deletar este registro?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+    cProduto.deleteColumnById(GetSelectedID);
+    uDataModule.qryProduto.Close;
+    uDataModule.qryProduto.Open;
+  end;
+end;
+
+procedure TfHistoricoProduto.dbGridTitleClick(Column: TColumn);
+begin
+  inherited;
+  colunaSelecionada := Column.FieldName;
+  bbtnGravarEditar.Visible := true;
+  bbtnGravarEditar.Enabled := true;
+  orderedByParam.Caption := Column.Title.Caption;
+end;
+
+procedure TfHistoricoProduto.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  inherited;
+  clearFields;
+  changeStatusButtons(False);
+end;
+
+procedure TfHistoricoProduto.FormShow(Sender: TObject);
+begin
+  inherited;
+  loadBlankImage;
+  dbGrid.DataSource := uDataModule.dsProduto;
+  pgControl.ActivePage := Consulta;
+  uDataModule.qryProduto.Active := True;
+end;
+
+procedure TfHistoricoProduto.imgClick(Sender: TObject);
+begin
+  inherited;
+  if openPictureDialog.Execute then
+    img.Picture.LoadFromFile(openPictureDialog.FileName);
+end;
+
+procedure TfHistoricoProduto.mskeBuscarChange(Sender: TObject);
+var
+  valorInt: Integer;
+  valorFloat: Double;
+begin
+  inherited;
+  with uDataModule.qryProduto do
+  begin
+    if mskeBuscar.Text <> '' then
+    begin
+      if colunaSelecionada = 'nome_produto' then
+      begin
+        Filter := colunaSelecionada + ' LIKE ' + QuotedStr(mskeBuscar.Text + '%');
+        Filtered := True;
+      end
+      else if (colunaSelecionada = 'codigo') or (colunaSelecionada = 'id') or (colunaSelecionada = 'quantidade') then
+      begin
+        if TryStrToInt(mskeBuscar.Text, valorInt) then
+        begin
+          Filter := colunaSelecionada + ' = ' + IntToStr(valorInt);
+          Filtered := True;
+        end
+        else
+        begin
+          Filter := '';
+          Filtered := False;
+        end;
+      end
+      else if colunaSelecionada = 'preco' then
+      begin
+        if TryStrToFloat(mskeBuscar.Text, valorFloat) then
+        begin
+          Filter := colunaSelecionada + ' = ' + FloatToStr(valorFloat);
+          Filtered := True;
+        end
+        else
+        begin
+          Filter := '';
+          Filtered := False;
+        end;
+      end
+      else
+      begin
+        Filter := '';
+        Filtered := False;
+      end;
+    end
+    else
+    begin
+      Filter := '';
+      Filtered := False;
+    end;
+  end;
+end;
+
+end.
+

@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, heranca, Data.DB, Vcl.Buttons,
   Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls, datamodule, Vcl.ComCtrls,
   Vcl.ExtDlgs, RxToolEdit, RxCurrEdit, cProduto, Data.Win.ADODB, Vcl.ControlList,
-  Vcl.Imaging.jpeg;
+  Vcl.Imaging.jpeg, System.IOUtils;
 
 type
   TfHistoricoProduto = class(TfHeranca)
@@ -81,30 +81,69 @@ begin
   img.Picture.LoadFromFile('C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\blank_photo.jpg');
 end;
 
+
 procedure TfHistoricoProduto.bbtnCadastrarClick(Sender: TObject);
+var
+  destino: string;
 begin
   inherited;
 
+  // Define a pasta padrão onde as fotos ficarão
+  destino := 'C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\' +
+             ExtractFileName(openPictureDialog.FileName);
+
+  // Copia o arquivo selecionado para a pasta padrão
+  if FileExists(openPictureDialog.FileName) then
+    TFile.Copy(openPictureDialog.FileName, destino, True); // True sobrescreve se já existir
+
+  // Agora grava no banco o caminho da nova pasta
   cProduto.saveEntityToDataBase(
     StrToIntDef(edtCodigo.Text, 0),
     lbleNomeProduto.Text,
     StrToFloatDef(cePreco.Text, 0),
     StrToIntDef(edtQuantidade.Text, 0),
-    openPictureDialog.FileName
+    destino // sempre grava o caminho da pasta padrão
   );
-  ShowMessage(openPictureDialog.FileName);
 
   ShowMessage('Produto cadastrado com sucesso!');
   uDataModule.qryProduto.Close;
   uDataModule.qryProduto.Open;
-
+  bbtnCancelar.Enabled := false;
   changeStatusButtons(False);
 end;
+
+procedure TfHistoricoProduto.bbtnSalvarAlteracaoClick(Sender: TObject);
+  var
+    produtoEncontrado: TcProduto;
+    destino: String;
+  begin
+    inherited;
+      changeStatusButtons(False);
+
+  destino := 'C:\Users\vinic\Desktop\Curso Delphi Para Iniciantes\Projeto Básico\fotos_produtos\' +
+             ExtractFileName(openPictureDialog.FileName);
+
+    if (FileExists(openPictureDialog.FileName)) then
+     TFile.Copy(openPictureDialog.FileName, destino, true);
+
+    produtoEncontrado := TcProduto.getEntity(GetSelectedID);
+    produtoEncontrado.id := GetSelectedID;
+    produtoEncontrado.codigo := StrToIntDef(edtCodigo.Text, 0);
+    produtoEncontrado.nomeProduto := lbleNomeProduto.Text;
+    produtoEncontrado.preco := StrToFloatDef(cePreco.Text, 0);
+    produtoEncontrado.quantidade := StrToIntDef(edtQuantidade.Text, 0);
+    produtoEncontrado.foto := destino;
+
+    bbtnCancelar.Enabled := false;
+
+    cProduto.saveEntityToDBAlreadyExists(produtoEncontrado);
+  end;
 
 procedure TfHistoricoProduto.bbtnCancelarClick(Sender: TObject);
 begin
   inherited;
   clearFields;
+  bbtnCancelar.Enabled := false;
   changeStatusButtons(False);
   bbtnGravarEditar.Enabled := True;
   bbtnNovo.Enabled := True;
@@ -130,7 +169,7 @@ begin
   lbleNomeProduto.Text := entityFound.nomeProduto;
   cePreco.Text := FloatToStr(entityFound.preco);
   edtQuantidade.Text := IntToStr(entityFound.quantidade);
-
+  bbtnCancelar.enabled := true;
     if  FileExists(entityFound.foto) then
       img.Picture.LoadFromFile(entityFound.foto)
     else
@@ -153,26 +192,11 @@ begin
   lbleNomeProduto.Text := '';
   edtQuantidade.Text := '';
   loadBlankImage;
+  bbtnCancelar.Enabled := true;
   pgControl.Pages[1].Caption := 'Cadastrando novo conteúdo';
 end;
 
-procedure TfHistoricoProduto.bbtnSalvarAlteracaoClick(Sender: TObject);
-  var
-    produtoEncontrado: TcProduto;
-  begin
-    inherited;
-      changeStatusButtons(False);
 
-    produtoEncontrado := TcProduto.getEntity(GetSelectedID);
-    produtoEncontrado.id := GetSelectedID;
-    produtoEncontrado.codigo := StrToIntDef(edtCodigo.Text, 0);
-    produtoEncontrado.nomeProduto := lbleNomeProduto.Text;
-    produtoEncontrado.preco := StrToFloatDef(cePreco.Text, 0);
-    produtoEncontrado.quantidade := StrToIntDef(edtQuantidade.Text, 0);
-    produtoEncontrado.foto := openPictureDialog.FileName;
-
-    cProduto.saveEntityToDBAlreadyExists(produtoEncontrado);
-  end;
 
 function TfHistoricoProduto.GetSelectedID: Integer;
 begin
@@ -220,6 +244,7 @@ begin
   dbGrid.DataSource := uDataModule.dsProduto;
   pgControl.ActivePage := Consulta;
   uDataModule.qryProduto.Active := True;
+  bbtnCancelar.Enabled := false;
 end;
 
 procedure TfHistoricoProduto.imgClick(Sender: TObject);

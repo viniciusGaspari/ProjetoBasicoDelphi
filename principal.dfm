@@ -377,6 +377,15 @@ object fPrincipal: TfPrincipal
       TabOrder = 8
       Text = ''
     end
+    object bbtnCpf: TBitBtn
+      Left = 436
+      Top = 276
+      Width = 45
+      Height = 25
+      Caption = 'CPF'
+      TabOrder = 9
+      OnClick = bbtnCpfClick
+    end
   end
   object Panel5: TPanel
     Left = 0

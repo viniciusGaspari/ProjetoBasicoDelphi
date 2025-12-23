@@ -40,7 +40,9 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure imgClick(Sender: TObject);
+    procedure mskeBuscarChange(Sender: TObject);
   private
+  colunaSelecionada: string;
     procedure changeStatusButtons(flag: Boolean);
     procedure clearFields;
     procedure loadBlankImage;
@@ -76,6 +78,64 @@ end;
 procedure TfHistoricoVenda.loadBlankImage;
 begin
   img.Picture := nil; // ou carregar uma imagem padrão
+end;
+
+
+procedure TfHistoricoVenda.mskeBuscarChange(Sender: TObject);
+var
+  valorInt: Integer;
+  valorFloat: Double;
+begin
+  inherited;
+  with uDataModule.qryProduto do
+  begin
+    if mskeBuscar.Text <> '' then
+    begin
+      if colunaSelecionada = 'nome_produto' then
+      begin
+        Filter := colunaSelecionada + ' LIKE ' + QuotedStr(mskeBuscar.Text + '%');
+        Filtered := True;
+      end
+      else if (colunaSelecionada = 'codigo') or
+              (colunaSelecionada = 'id') or
+              (colunaSelecionada = 'quantidade') then
+      begin
+        if TryStrToInt(mskeBuscar.Text, valorInt) then
+        begin
+          Filter := colunaSelecionada + ' = ' + IntToStr(valorInt);
+          Filtered := True;
+        end
+        else
+        begin
+          Filter := '';
+          Filtered := False;
+        end;
+      end
+      else if colunaSelecionada = 'preco' then
+      begin
+        if TryStrToFloat(mskeBuscar.Text, valorFloat) then
+        begin
+          Filter := colunaSelecionada + ' = ' + FloatToStr(valorFloat);
+          Filtered := True;
+        end
+        else
+        begin
+          Filter := '';
+          Filtered := False;
+        end;
+      end
+      else
+      begin
+        Filter := '';
+        Filtered := False;
+      end;
+    end
+    else
+    begin
+      Filter := '';
+      Filtered := False;
+    end;
+  end;
 end;
 
 
@@ -118,12 +178,12 @@ procedure TfHistoricoVenda.FormShow(Sender: TObject);
 begin
   loadBlankImage;
   pgControl.ActivePage := Consulta;
-    uDataModule.dsVendaEfetuada.DataSet := uDataModule.qryVendaEfetuadaSelectAll;
+  uDataModule.dsVendaEfetuada.DataSet := uDataModule.qryVendaEfetuadaSelectAll;
   dbGrid.DataSource := uDataModule.dsVendaEfetuada;
-  uDataModule.qryVendaEfetuadaSelectAll.Close;
-  uDataModule.qryVendaEfetuadaSelectAll.Open;
   uDataModule.dsVendaEfetuada.Enabled := true;
   uDataModule.qryVendaEfetuadaSelectAll.Active := true;
+  uDataModule.qryVendaEfetuadaSelectAll.Close;
+  uDataModule.qryVendaEfetuadaSelectAll.Open;
 end;
 
 procedure TfHistoricoVenda.FormClose(Sender: TObject; var Action: TCloseAction);
