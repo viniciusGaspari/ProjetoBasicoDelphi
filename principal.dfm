@@ -23,7 +23,6 @@ object fPrincipal: TfPrincipal
     Height = 702
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 334
     object Label2: TLabel
       Left = 113
       Top = 327
@@ -443,8 +442,6 @@ object fPrincipal: TfPrincipal
       VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbDelete]
       Align = alBottom
       TabOrder = 2
-      ExplicitLeft = -4
-      ExplicitTop = 664
     end
   end
   object MainMenu1: TMainMenu

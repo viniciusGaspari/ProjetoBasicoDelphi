@@ -68,9 +68,7 @@ begin
 end;
 
      ShowMessage('Compra efetuada com sucesso!');
-     uDataModule.clearCarrinhoVendaTable.ExecSQL;
-     uDataModule.qryCarrinhoSelectAll.Close;
-     uDataModule.qryCarrinhoSelectAll.Open;
+
 
   finally
     cCliente.Free;

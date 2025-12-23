@@ -101,6 +101,7 @@ type
     qryClienteSelectAllid: TAutoIncField;
     qryClienteSelectAllcpf: TStringField;
     qryClienteSelectAllnome: TStringField;
+    qryCarrinho: TADOQuery;
     procedure DataModuleCreate(Sender: TObject);
 
   private

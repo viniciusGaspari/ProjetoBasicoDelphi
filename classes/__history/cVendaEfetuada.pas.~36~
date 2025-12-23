@@ -38,10 +38,9 @@ begin
     with uDataModule.qryCarrinho do
       begin
         SQL.Text :=
-        'SELECT c.id_produto, c.quantidade, c.preco_total ' +
+        'SELECT c.id_produto, p.nome, c.quantidade, c.preco_total ' +
         'FROM carrinho_venda c ' +
         'JOIN produto p ON c.id_produto = p.id';
-
         Open;
       end;
 
@@ -67,10 +66,8 @@ begin
   uDataModule.qryCarrinho.Next;
 end;
 
-     ShowMessage('Compra efetuada com sucesso!');
-     uDataModule.clearCarrinhoVendaTable.ExecSQL;
-     uDataModule.qryCarrinhoSelectAll.Close;
-     uDataModule.qryCarrinhoSelectAll.Open;
+
+
 
   finally
     cCliente.Free;

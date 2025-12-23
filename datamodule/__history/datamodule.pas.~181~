@@ -4,7 +4,6 @@ interface
 
 uses
   System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB;
-
 type
   TuDataModule = class(TDataModule)
     adoConnection: TADOConnection;
@@ -84,12 +83,6 @@ type
     BCDField7: TBCDField;
     IntegerField13: TIntegerField;
     qryVendaEfetuadaInsert: TADOQuery;
-    AutoIncField7: TAutoIncField;
-    IntegerField14: TIntegerField;
-    IntegerField15: TIntegerField;
-    BCDField8: TBCDField;
-    BCDField9: TBCDField;
-    IntegerField16: TIntegerField;
     dsCliente: TDataSource;
     qryClienteGetByCpf: TADOQuery;
     qryClienteSelectAll: TADOQuery;
@@ -109,6 +102,7 @@ type
     qryClienteSelectAllcpf: TStringField;
     qryClienteSelectAllnome: TStringField;
     procedure DataModuleCreate(Sender: TObject);
+
   private
     function GetConnectionString: String;
 
@@ -118,7 +112,7 @@ type
     { Public declarations }
 
   end;
-
+  TOnCarrinhoChange = procedure(IsEmpty: Boolean) of object;
 var
   uDataModule: TuDataModule;
 

@@ -66,7 +66,7 @@ begin
   produtoFound := TcProduto.getEntityByCodigo(StrToIntDef(mskCodigo.Text, 0));
   qtd := StrToIntDef(mskQuantidade.Text, 0);
   cCliente := TcCliente.Create;
-  ShowMessage(mskCpfCliente.Text);
+
   if Assigned(produtoFound) and (qtd > 0) and cCliente.CheckExistenceByCPF(mskCpfCliente.Text) then
   begin
     try
@@ -116,31 +116,23 @@ var
 begin
   cVendaEfetuada := TcVendaEfetuada.Create;
   produtoFound := TcProduto.getEntityByCodigo(StrToIntDef(mskCodigo.Text, 0));
+
   try
-    if not Assigned(produtoFound) then
-    begin
-      ShowMessage('Produto não encontrado para finalizar a compra.');
-      Exit;
-    end;
-    precoTexto := StringReplace(mskPrecoTotal.Text, 'R$ ', '', []);
-    total := StrToFloatDef(precoTexto, 0);
-    qtd := StrToIntDef(mskQuantidade.Text, 0);
-    if (qtd <= 0) then
-    begin
-      ShowMessage('Quantidade inválida para finalizar.');
-      Exit;
-    end;
-    try
-      cVendaEfetuada.Insert(produtoFound.id, qtd, total, mskCpfCliente.Text);
-      ShowMessage('Compra finalizada com sucesso.');
-    except
-      on E: Exception do
-        ShowMessage('Erro ao finalizar compra: ' + E.Message);
-    end;
+    if not(Assigned(produtoFound)) then
+        ShowMessage('Produto não registrado')
+      else
+        begin
+          precoTexto := mskPrecoTotal.Text;
+          Delete(precoTexto,1,3);
+          total := StrToFloat(precoTexto);
+          cVendaEfetuada.RegistrarVenda(
+            StrToInt(mskCodigo.Text),StrToInt(mskQuantidade.Text), total, mskCpfCliente.Text);
+      end;
   finally
     cVendaEfetuada.Free;
     produtoFound.Free;
   end;
+
 end;
 
 procedure TfPrincipal.ConsultarProdutos2Click(Sender: TObject);
@@ -165,6 +157,7 @@ begin
   uDataModule.qryCarrinhoSelectAll.Open;
   mskPrecoTotal.Text := '';
   bbtnAdicionarProdutoNaLista.Enabled := False;
+  uDataModule.dsCarrinhoVenda.DataSet.Close;
 end;
 
 procedure TfPrincipal.mskCodigoChange(Sender: TObject);

@@ -44,6 +44,7 @@ type
     procedure bbtnFinalizarCompraClick(Sender: TObject);
   private
     cVenda: TcVenda;
+    idProduto: integer;
   public
   end;
 
@@ -116,31 +117,26 @@ var
 begin
   cVendaEfetuada := TcVendaEfetuada.Create;
   produtoFound := TcProduto.getEntityByCodigo(StrToIntDef(mskCodigo.Text, 0));
+
   try
-    if not Assigned(produtoFound) then
-    begin
-      ShowMessage('Produto não encontrado para finalizar a compra.');
-      Exit;
-    end;
-    precoTexto := StringReplace(mskPrecoTotal.Text, 'R$ ', '', []);
-    total := StrToFloatDef(precoTexto, 0);
-    qtd := StrToIntDef(mskQuantidade.Text, 0);
-    if (qtd <= 0) then
-    begin
-      ShowMessage('Quantidade inválida para finalizar.');
-      Exit;
-    end;
-    try
-      cVendaEfetuada.Insert(produtoFound.id, qtd, total, mskCpfCliente.Text);
-      ShowMessage('Compra finalizada com sucesso.');
-    except
-      on E: Exception do
-        ShowMessage('Erro ao finalizar compra: ' + E.Message);
-    end;
+    if not(Assigned(produtoFound)) then
+        ShowMessage('Produto não registrado')
+      else
+        begin
+          precoTexto := mskPrecoTotal.Text;
+          Delete(precoTexto,1,3);
+          total := StrToFloat(precoTexto);
+          cVendaEfetuada.RegistrarVenda(
+            idProduto,
+            StrToInt(mskQuantidade.Text),
+            total,
+            mskCpfCliente.Text);
+      end;
   finally
     cVendaEfetuada.Free;
     produtoFound.Free;
   end;
+
 end;
 
 procedure TfPrincipal.ConsultarProdutos2Click(Sender: TObject);
@@ -163,8 +159,8 @@ begin
   dbGridPrincipal.DataSource := nil;
   dbGridPrincipal.DataSource := uDataModule.dsCarrinhoVenda;
   uDataModule.qryCarrinhoSelectAll.Open;
+  uDataModule.clearCarrinhoVendaTable.ExecSQL;
   mskPrecoTotal.Text := '';
-  bbtnAdicionarProdutoNaLista.Enabled := False;
 end;
 
 procedure TfPrincipal.mskCodigoChange(Sender: TObject);
@@ -175,6 +171,7 @@ begin
   if Assigned(produtoFound) then
   begin
     try
+      idProduto := produtoFound.id;
       bbtnAdicionarProdutoNaLista.Enabled := True;
       mskNomeProduto.Text := produtoFound.nomeProduto;
       mskPreco.Text := 'R$ ' + FloatToStr(produtoFound.preco);

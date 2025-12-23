@@ -3,11 +3,12 @@
   Height = 846
   Width = 1126
   object adoConnection: TADOConnection
+    Connected = True
     ConnectionString = 
-      'Provider=SQLOLEDB;Data Source=192.168.15.6;Initial Catalog=venda' +
-      's;User ID=sa;Password=123;'
+      'Provider=SQLOLEDB;Data Source=192.168.15.10;Initial Catalog=vend' +
+      'as;User ID=sa;Password=123;'
     LoginPrompt = False
-    Provider = 'SQLOLEDB'
+    Provider = 'SQLOLEDB.1'
     Left = 32
     Top = 8
   end
@@ -715,5 +716,13 @@
       Precision = 21
       Size = 2
     end
+  end
+  object qryCarrinho: TADOQuery
+    Connection = adoConnection
+    CursorType = ctStatic
+    DataSource = dsCarrinhoVenda
+    Parameters = <>
+    Left = 584
+    Top = 200
   end
 end

@@ -38,39 +38,35 @@ begin
     with uDataModule.qryCarrinho do
       begin
         SQL.Text :=
-        'SELECT c.id_produto, c.quantidade, c.preco_total ' +
+        'SELECT c.id_produto, p.nome_produto, c.quantidade, c.preco_total ' +
         'FROM carrinho_venda c ' +
         'JOIN produto p ON c.id_produto = p.id';
-
         Open;
       end;
+while not uDataModule.qryCarrinho.Eof do
+begin
+  with uDataModule.qryVendaEfetuadaInsert do
+  begin
+    SQL.Text :=
+      'INSERT INTO venda_efetuada (id_produto, quantidade, valor_total_compra, cpf_cliente) ' +
+      'VALUES (:idProduto, :quantidade, :valorTotalCompra, :cpfCliente)';
 
-      while not uDataModule.qryCarrinho.Eof do
-      begin
-        with uDataModule.qryVendaEfetuadaInsert do
-        begin
-          SQL.Text :=
-            'INSERT INTO venda_efetuada (id_produto, quantidade, valor_total_compra, cpf_cliente) ' +
-            'VALUES (:idProduto, :quantidade, :valorTotalCompra, :cpfCliente)';
+    Parameters.ParamByName('idProduto').Value :=
+      uDataModule.qryCarrinho.FieldByName('id_produto').AsInteger;
+    Parameters.ParamByName('quantidade').Value :=
+      uDataModule.qryCarrinho.FieldByName('quantidade').AsInteger;
+    Parameters.ParamByName('valorTotalCompra').Value :=
+      uDataModule.qryCarrinho.FieldByName('preco_total').AsFloat; // usa preco_total do carrinho
+    Parameters.ParamByName('cpfCliente').Value := cpfCliente;
 
-          Parameters.ParamByName('idProduto').Value :=
-            uDataModule.qryCarrinho.FieldByName('id_produto').AsInteger;
-          Parameters.ParamByName('quantidade').Value :=
-            uDataModule.qryCarrinho.FieldByName('quantidade').AsInteger;
-          Parameters.ParamByName('valorTotalCompra').Value :=
-            uDataModule.qryCarrinho.FieldByName('preco_total').AsFloat;
-          Parameters.ParamByName('cpfCliente').Value := cpfCliente;
-
-          ExecSQL;
-        end;
+    ExecSQL;
+  end;
 
   uDataModule.qryCarrinho.Next;
 end;
 
-     ShowMessage('Compra efetuada com sucesso!');
-     uDataModule.clearCarrinhoVendaTable.ExecSQL;
-     uDataModule.qryCarrinhoSelectAll.Close;
-     uDataModule.qryCarrinhoSelectAll.Open;
+
+
 
   finally
     cCliente.Free;
